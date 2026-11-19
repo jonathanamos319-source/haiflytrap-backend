@@ -1,0 +1,7 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/haiflytr/haiflytrap-backend
+    - /bin/cp -R dist $DEPLOYPATH/
+    - /bin/cp -R package.json $DEPLOYPATH/
+    - /bin/touch /home/haiflytr/haiflytrap-backend/tmp/restart.txt
