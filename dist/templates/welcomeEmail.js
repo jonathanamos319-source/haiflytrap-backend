@@ -4,8 +4,8 @@ exports.getWelcomeEmailHtml = exports.getWelcomeEmailSubject = void 0;
 const getWelcomeEmailSubject = (name) => {
     const firstName = name?.trim() ? name.trim().split(' ')[0] : '';
     return firstName
-        ? `Welcome to Your No Fly Zone, ${firstName}! 🪰🚫 — Ifi from Haifly Trap`
-        : `Welcome to Your No Fly Zone! 🪰🚫 — Ifi from Haifly Trap`;
+        ? `Welcome to the family, ${firstName}! 🪰 — Ifi from Haifly Trap`
+        : `Welcome to the family! 🪰 — Ifi from Haifly Trap`;
 };
 exports.getWelcomeEmailSubject = getWelcomeEmailSubject;
 const getWelcomeEmailHtml = (data) => {
@@ -13,236 +13,143 @@ const getWelcomeEmailHtml = (data) => {
     const firstName = fullName ? fullName.split(' ')[0] : 'there';
     const shopUrl = 'https://www.haiflytrapng.com/shop';
     const trackUrl = 'https://www.haiflytrapng.com/track';
-    const whatsappUrl = 'https://wa.me/2348031301311?text=' + encodeURIComponent('Hi Ifi, I just joined Haifly Trap and want to set up my No Fly Zone!');
-    const sprayImg = 'https://www.haiflytrapng.com/images/Broadkillersurefacespray-removebg-preview.png';
+    const whatsappUrl = 'https://wa.me/2348031301311?text=' +
+        encodeURIComponent('Hi Ifi, I just joined Haifly Trap and want to set up my No Fly Zone!');
+    // Production image assets hosted on haiflytrapng.com
+    const heroImg = 'https://www.haiflytrapng.com/images/lanscape-1.png';
     const trapImg = 'https://www.haiflytrapng.com/images/TRAPIMG1.png';
+    const sprayImg = 'https://www.haiflytrapng.com/images/Broadkillersurefacespray.png';
+    const safeImg = 'https://www.haiflytrapng.com/images/SAFERPOST.png';
+    const riderImg = 'https://www.haiflytrapng.com/images/delivery_rider.png';
     return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Welcome to Your No Fly Zone</title>
+  <title>Welcome to Haifly Trap</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800;900&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
     table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
     img { -ms-interpolation-mode: bicubic; border: 0; outline: none; text-decoration: none; }
-    body { margin: 0; padding: 0; width: 100% !important; background-color: #f4f5f3; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+    body { margin: 0; padding: 0; width: 100% !important; background-color: #0e0e0e; font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
     @media only screen and (max-width: 600px) {
-      .container-table { width: 100% !important; max-width: 100% !important; border-radius: 0 !important; }
-      .mobile-padding { padding-left: 20px !important; padding-right: 20px !important; }
-      .headline-text { font-size: 28px !important; line-height: 36px !important; }
-      .product-hero-img { max-width: 220px !important; height: auto !important; }
-      .testimonial-blob { width: 70px !important; height: 70px !important; }
+      .container-table { width: 100% !important; max-width: 100% !important; }
+      .mobile-padding { padding-left: 24px !important; padding-right: 24px !important; }
+      .hero-title { font-size: 26px !important; line-height: 32px !important; }
+      .prod-title { font-size: 24px !important; line-height: 28px !important; }
     }
   </style>
 </head>
-<body style="margin: 0; padding: 24px 0; background-color: #f4f5f3;">
-  <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #f4f5f3;">
+<body style="margin: 0; padding: 24px 0 48px; background-color: #0e0e0e;">
+  <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #0e0e0e;">
     <tr>
       <td align="center" style="padding: 0 12px;">
         
-        <!-- Main Email Container (600px Max) -->
-        <table role="presentation" class="container-table" width="600" border="0" cellspacing="0" cellpadding="0" style="max-width: 600px; width: 100%; background-color: #ffffff; border-radius: 28px; overflow: hidden; box-shadow: 0 12px 36px rgba(15,82,56,0.08); border: 1px solid #e7ebe8;">
+        <!-- Main Email Container (600px Max, Seamless without divider borders) -->
+        <table role="presentation" class="container-table" width="600" border="0" cellspacing="0" cellpadding="0" style="max-width: 600px; width: 100%; background-color: #ffffff; overflow: hidden; box-shadow: 0 24px 64px rgba(0,0,0,0.6);">
           
-          <!-- Top Tagline Bar -->
+          <!-- 1. HERO: Full-bleed image with gradient overlay -->
           <tr>
-            <td align="center" style="background-color: #ecfdf5; padding: 12px 16px; border-bottom: 1px solid #d1fae5;">
-              <p style="margin: 0; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #047857;">
-                🛡️ Official Member • Your Space Is Now A No Fly Zone
-              </p>
-            </td>
-          </tr>
-
-          <!-- Hero Brand & Wavy Gradient Header -->
-          <tr>
-            <td align="center" style="background: linear-gradient(180deg, #063826 0%, #0f5238 65%, #15803d 100%); padding: 36px 24px 10px 24px;">
-              <!-- Brand Wordmark -->
-              <h1 style="margin: 0; font-family: 'Times New Roman', Georgia, serif; font-size: 28px; font-weight: 700; letter-spacing: 5px; color: #ffffff; text-transform: uppercase;">
-                HAIFLY TRAP
-              </h1>
-              <p style="margin: 6px 0 24px 0; font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; color: #a7f3d0; font-weight: 600;">
-                Nigeria's #1 Eco-Friendly Fly &amp; Pest Elimination
-              </p>
-
-              <!-- Central Hero Product Presentation -->
-              <table role="presentation" border="0" cellspacing="0" cellpadding="0" align="center" style="margin: 0 auto;">
+            <td style="position: relative; background-color: #031c10; padding: 0;">
+              <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0">
                 <tr>
-                  <td align="center" style="padding: 10px 0;">
-                    <img src="${sprayImg}" alt="Broadkiller Surface Spray" class="product-hero-img" width="240" style="display: block; width: 240px; max-width: 100%; height: auto; filter: drop-shadow(0 18px 24px rgba(0,0,0,0.35));" />
+                  <td style="padding: 0;">
+                    <img src="${heroImg}" alt="Haifly Trap No Fly Zone" width="600" style="display: block; width: 100%; max-width: 600px; height: 280px; object-fit: cover; object-position: center top;" />
                   </td>
                 </tr>
-              </table>
-
-              <!-- Badge -->
-              <table role="presentation" border="0" cellspacing="0" cellpadding="0" align="center" style="margin-top: 14px; margin-bottom: 24px;">
                 <tr>
-                  <td align="center" style="background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.25); border-radius: 999px; padding: 6px 18px;">
-                    <span style="font-size: 11px; font-weight: 800; letter-spacing: 1.5px; color: #fef08a; text-transform: uppercase;">
-                      100% Non-Toxic • Proven Organic Protection
-                    </span>
+                  <td style="background: linear-gradient(180deg, #031c10 0%, #073921 50%, #0f5238 100%); padding: 28px 32px 32px; text-align: left;">
+                    <p style="margin: 0 0 8px 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 10px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: #a7f3d0;">
+                      HAIFLY TRAP &bull; HAIFLYTRAPNG.COM
+                    </p>
+                    <h1 class="hero-title" style="margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 32px; line-height: 38px; font-weight: 900; text-transform: uppercase; color: #ffffff; letter-spacing: -0.5px;">
+                      WELCOME TO THE<br><span style="color: #fde68a;">NO FLY ZONE</span> FAMILY.
+                    </h1>
                   </td>
                 </tr>
               </table>
             </td>
           </tr>
 
-          <!-- Welcome Letter & Story Section -->
+          <!-- 2. WARM WELCOME LETTER FROM IFI (Seamless, No Borders) -->
           <tr>
-            <td class="mobile-padding" style="background-color: #ffffff; padding: 42px 40px 32px 40px; text-align: center;">
+            <td class="mobile-padding" style="background-color: #ffffff; padding: 40px 44px 32px; text-align: left;">
+              <p style="margin: 0 0 14px 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 11px; font-weight: 800; letter-spacing: 2.5px; text-transform: uppercase; color: #0f5238;">
+                A personal note from Ifi
+              </p>
               
-              <h2 class="headline-text" style="margin: 0 0 16px 0; font-family: 'Times New Roman', Georgia, serif; font-size: 34px; line-height: 42px; font-weight: 700; color: #0a1f16; letter-spacing: -0.5px;">
-                Welcome to Your<br/><span style="color: #0f5238; font-style: italic;">No Fly Zone!</span>
+              <h2 style="margin: 0 0 20px 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 28px; line-height: 34px; font-weight: 900; color: #071a0e; letter-spacing: -0.3px;">
+                So glad you're here, <span style="color: #0f5238;">${firstName}.</span>
               </h2>
 
-              <p style="margin: 0 0 18px 0; font-size: 16px; line-height: 26px; color: #334155; text-align: left;">
-                Hello <strong>${firstName}</strong>,
+              <p style="margin: 0 0 16px 0; font-size: 15px; line-height: 26px; color: #374151;">
+                You just made a decision that your home — and everyone in it — will thank you for.
               </p>
 
-              <p style="margin: 0 0 18px 0; font-size: 15px; line-height: 26px; color: #475569; text-align: left;">
-                I'm <strong>Ifi from Haifly Trap</strong>, and I wanted to personally welcome you to our family.
+              <p style="margin: 0 0 16px 0; font-size: 15px; line-height: 26px; color: #374151;">
+                I started Haifly Trap because I was tired of watching families, restaurant owners, and poultry farmers fight a losing battle against flies and pests with products that were either toxic, ineffective, or both.
               </p>
 
-              <p style="margin: 0 0 18px 0; font-size: 15px; line-height: 26px; color: #475569; text-align: left;">
-                Whether you are protecting your home and kitchen, safeguarding livestock on a poultry farm, or keeping restaurant guests happy — you know how frustrating, unhygienic, and relentless houseflies and crawling pests can be.
+              <p style="margin: 0 0 16px 0; font-size: 15px; line-height: 26px; color: #374151;">
+                What we built is different. And now it belongs to you, too. Below are the tools we've put in your hands — your No Fly Zone officially starts today.
               </p>
 
-              <p style="margin: 0 0 24px 0; font-size: 15px; line-height: 26px; color: #475569; text-align: left;">
-                We built Haifly Trap and the <strong>Broadkiller</strong> botanical formula to solve this once and for all: <strong>100% relentless elimination with zero toxic fumes</strong>. From today on, your space is officially a <em>No Fly Zone</em>.
+              <p style="margin: 24px 0 28px 0; font-size: 14px; line-height: 22px; color: #374151;">
+                With love,<br>
+                <strong style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px; color: #0f5238;">Ifi — Founder, Haifly Trap</strong>
               </p>
 
-              <!-- Primary CTA Button (Kurk Pill Style) -->
-              <table role="presentation" border="0" cellspacing="0" cellpadding="0" align="center" style="margin: 32px auto 16px auto;">
+              <!-- Pill CTA -->
+              <table role="presentation" border="0" cellspacing="0" cellpadding="0">
                 <tr>
-                  <td align="center" style="border-radius: 999px; background: #0f5238; box-shadow: 0 8px 20px rgba(15,82,56,0.28);">
-                    <a href="${shopUrl}" target="_blank" style="display: inline-block; padding: 18px 42px; font-size: 15px; font-weight: 800; letter-spacing: 0.5px; color: #ffffff; text-decoration: none; border-radius: 999px; text-transform: uppercase;">
-                      Explore The No Fly Zone &rarr;
+                  <td align="center" style="background-color: #0f5238; border-radius: 999px; box-shadow: 0 8px 20px rgba(15,82,56,0.3);">
+                    <a href="${shopUrl}" target="_blank" style="display: inline-block; padding: 15px 38px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 12px; font-weight: 800; letter-spacing: 1px; color: #ffffff; text-decoration: none; border-radius: 999px; text-transform: uppercase;">
+                      Start Shopping &rarr;
                     </a>
                   </td>
                 </tr>
               </table>
-
-              <p style="margin: 0; font-size: 12px; color: #94a3b8;">Fast Dispatch &bull; Nationwide Doorstep Delivery Across Nigeria</p>
             </td>
           </tr>
 
-          <!-- Separator / Section Title -->
+          <!-- 3. SECTION BANNER (Seamless, No Borders) -->
           <tr>
-            <td style="padding: 24px 40px 12px 40px; background-color: #fafbf9; border-top: 1px solid #edf2ef; text-align: center;">
-              <p style="margin: 0; font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: #0f5238;">
-                Real Experiences From Verified Users
-              </p>
+            <td class="mobile-padding" style="background-color: #ffffff; padding: 24px 44px 8px; text-align: left;">
+              <h2 style="margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 26px; line-height: 32px; font-weight: 900; text-transform: uppercase; color: #071a0e; letter-spacing: -0.3px;">
+                YOUR <span style="color: #0f5238;">NEW TOOLS</span> ARE WAITING.
+              </h2>
             </td>
           </tr>
 
-          <!-- Testimonial 1 (Poultry Farm - Blob on Right) -->
+          <!-- 4a. PRODUCT BLOCK: HAI FLY TRAP -->
           <tr>
-            <td class="mobile-padding" style="background-color: #fafbf9; padding: 16px 40px 24px 40px;">
-              <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #ffffff; border-radius: 20px; padding: 24px; border: 1px solid #e7ebe8; box-shadow: 0 4px 14px rgba(0,0,0,0.03);">
+            <td style="background-color: #ffffff; padding: 16px 0 36px;">
+              <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0">
                 <tr>
-                  <td valign="top" style="padding-right: 16px;">
-                    <!-- Quote Mark -->
-                    <div style="font-family: 'Times New Roman', Georgia, serif; font-size: 38px; line-height: 28px; color: #d97706; font-weight: bold; margin-bottom: 6px;">&ldquo;</div>
-                    <h3 style="margin: 0 0 8px 0; font-family: 'Times New Roman', Georgia, serif; font-size: 19px; line-height: 24px; color: #0f172a;">
-                      Zero flies in my poultry farm within 48 hours.
-                    </h3>
-                    <p style="margin: 0 0 12px 0; font-size: 13px; line-height: 20px; color: #475569;">
-                      &ldquo;Houseflies were tormenting my broilers and hurting feed conversion. Hai Fly Trap caught thousands in the first two days alone without harmful chemicals. A total game changer for Nigerian farmers.&rdquo;
-                    </p>
-                    <div style="color: #f59e0b; font-size: 14px; letter-spacing: 2px; margin-bottom: 4px;">★★★★★</div>
-                    <p style="margin: 0; font-size: 12px; font-weight: 700; color: #0f5238;">
-                      Alhaji Garba M. <span style="font-weight: 400; color: #94a3b8;">&bull; Commercial Poultry Owner, Kaduna</span>
-                    </p>
-                  </td>
-                  <td valign="middle" align="center" width="80" style="width: 80px;">
-                    <div style="width: 72px; height: 72px; border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; background: #0f5238; display: flex; align-items: center; justify-content: center; text-align: center; color: #ffffff; font-weight: bold; font-size: 24px; line-height: 72px; box-shadow: 0 6px 14px rgba(15,82,56,0.25);">
-                      🐔
-                    </div>
+                  <td style="padding: 0;">
+                    <img src="${trapImg}" alt="Hai Fly Trap" width="600" style="display: block; width: 100%; max-width: 600px; height: 280px; object-fit: cover; object-position: center;" />
                   </td>
                 </tr>
-              </table>
-            </td>
-          </tr>
-
-          <!-- Testimonial 2 (Home & Kitchen - Blob on Left) -->
-          <tr>
-            <td class="mobile-padding" style="background-color: #fafbf9; padding: 0 40px 24px 40px;">
-              <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #ffffff; border-radius: 20px; padding: 24px; border: 1px solid #e7ebe8; box-shadow: 0 4px 14px rgba(0,0,0,0.03);">
                 <tr>
-                  <td valign="middle" align="center" width="80" style="width: 80px; padding-right: 16px;">
-                    <div style="width: 72px; height: 72px; border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; background: #d97706; display: flex; align-items: center; justify-content: center; text-align: center; color: #ffffff; font-weight: bold; font-size: 24px; line-height: 72px; box-shadow: 0 6px 14px rgba(217,119,6,0.25);">
-                      🏡
+                  <td class="mobile-padding" style="padding: 24px 44px 0; text-align: left;">
+                    <div class="prod-title" style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 28px; line-height: 32px; font-weight: 900; text-transform: uppercase; color: #071a0e; margin-bottom: 12px; letter-spacing: -0.3px;">
+                      THE HAI FLY TRAP
                     </div>
-                  </td>
-                  <td valign="top">
-                    <!-- Quote Mark -->
-                    <div style="font-family: 'Times New Roman', Georgia, serif; font-size: 38px; line-height: 28px; color: #0f5238; font-weight: bold; margin-bottom: 6px;">&ldquo;</div>
-                    <h3 style="margin: 0 0 8px 0; font-family: 'Times New Roman', Georgia, serif; font-size: 19px; line-height: 24px; color: #0f172a;">
-                      My kitchen is finally a peaceful, clean sanctuary.
-                    </h3>
-                    <p style="margin: 0 0 12px 0; font-size: 13px; line-height: 20px; color: #475569;">
-                      &ldquo;Broadkiller Surface Spray is completely odourless. With toddlers at home, I was always scared of toxic sprays. Now, flies drop dead without any nasty chemical fumes. Highly recommended!&rdquo;
+                    <p style="margin: 0 0 16px 0; font-size: 14px; line-height: 24px; color: #374151;">
+                      Meet the world's first commercially viable housefly trap — built for homes, farms, restaurants, and any space that deserves to breathe clean air.
                     </p>
-                    <div style="color: #f59e0b; font-size: 14px; letter-spacing: 2px; margin-bottom: 4px;">★★★★★</div>
-                    <p style="margin: 0; font-size: 12px; font-weight: 700; color: #0f5238;">
-                      Mrs. Chioma O. <span style="font-weight: 400; color: #94a3b8;">&bull; Lekki Phase 1, Lagos</span>
+                    <p style="margin: 0 0 4px 0; font-size: 13.5px; line-height: 22px; color: #6b7280; font-style: italic; border-left: 3px solid #c9a84c; padding-left: 14px;">
+                      "The Hai Fly Trap caught thousands of flies in my poultry farm within 48 hours. No chemicals, no mess. A game changer."
                     </p>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-
-          <!-- Testimonial 3 (Restaurant / Lounge - Blob on Right) -->
-          <tr>
-            <td class="mobile-padding" style="background-color: #fafbf9; padding: 0 40px 32px 40px;">
-              <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #ffffff; border-radius: 20px; padding: 24px; border: 1px solid #e7ebe8; box-shadow: 0 4px 14px rgba(0,0,0,0.03);">
-                <tr>
-                  <td valign="top" style="padding-right: 16px;">
-                    <!-- Quote Mark -->
-                    <div style="font-family: 'Times New Roman', Georgia, serif; font-size: 38px; line-height: 28px; color: #d97706; font-weight: bold; margin-bottom: 6px;">&ldquo;</div>
-                    <h3 style="margin: 0 0 8px 0; font-family: 'Times New Roman', Georgia, serif; font-size: 19px; line-height: 24px; color: #0f172a;">
-                      Outdoor restaurant guests eat without swatting flies.
-                    </h3>
-                    <p style="margin: 0 0 12px 0; font-size: 13px; line-height: 20px; color: #475569;">
-                      &ldquo;Our open-air terrace used to attract relentless flies during lunchtime. Setting up the Hai Fly Traps on our perimeter solved it immediately. Customer complaints dropped to zero.&rdquo;
+                    <p style="margin: 0 0 20px 0; font-size: 12px; color: #9ca3af; padding-left: 17px;">
+                      — Alhaji Garba M., Poultry Owner, Kaduna
                     </p>
-                    <div style="color: #f59e0b; font-size: 14px; letter-spacing: 2px; margin-bottom: 4px;">★★★★★</div>
-                    <p style="margin: 0; font-size: 12px; font-weight: 700; color: #0f5238;">
-                      Femi A. <span style="font-weight: 400; color: #94a3b8;">&bull; Lounge &amp; Restaurant Manager, Abuja</span>
-                    </p>
-                  </td>
-                  <td valign="middle" align="center" width="80" style="width: 80px;">
-                    <div style="width: 72px; height: 72px; border-radius: 50% 50% 30% 70% / 50% 40% 60% 50%; background: #047857; display: flex; align-items: center; justify-content: center; text-align: center; color: #ffffff; font-weight: bold; font-size: 24px; line-height: 72px; box-shadow: 0 6px 14px rgba(4,120,87,0.25);">
-                      🍽️
-                    </div>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-
-          <!-- Direct WhatsApp Support From Ifi Card -->
-          <tr>
-            <td class="mobile-padding" style="background-color: #ffffff; padding: 36px 40px; border-top: 1px solid #edf2ef; text-align: center;">
-              
-              <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="background: #f0fdf4; border: 2px dashed #0f5238; border-radius: 20px; padding: 28px 20px;">
-                <tr>
-                  <td align="center">
-                    <span style="display: inline-block; font-size: 28px; margin-bottom: 8px;">💬</span>
-                    <h3 style="margin: 0 0 8px 0; font-family: 'Times New Roman', Georgia, serif; font-size: 22px; color: #064e3b; font-weight: 700;">
-                      Need Guidance? Chat With Ifi on WhatsApp
-                    </h3>
-                    <p style="margin: 0 0 20px 0; font-size: 14px; line-height: 22px; color: #334155; max-width: 440px;">
-                      Whether you need help selecting the right quantity for your poultry capacity or want setup tips for your home, I am directly available to help you.
-                    </p>
-
-                    <!-- WhatsApp Button -->
-                    <table role="presentation" border="0" cellspacing="0" cellpadding="0" align="center">
+                    <table role="presentation" border="0" cellspacing="0" cellpadding="0">
                       <tr>
-                        <td align="center" style="background-color: #25D366; border-radius: 999px; box-shadow: 0 6px 18px rgba(37,211,102,0.35);">
-                          <a href="${whatsappUrl}" target="_blank" style="display: inline-block; padding: 14px 28px; font-size: 14px; font-weight: 800; color: #ffffff; text-decoration: none; border-radius: 999px;">
-                            Chat on WhatsApp: +234 803 130 1311 &rarr;
+                        <td align="center" style="background-color: #0f5238; border-radius: 999px;">
+                          <a href="${shopUrl}" target="_blank" style="display: inline-block; padding: 13px 32px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 11px; font-weight: 800; letter-spacing: 1px; color: #ffffff; text-decoration: none; border-radius: 999px; text-transform: uppercase;">
+                            Get Yours &rarr;
                           </a>
                         </td>
                       </tr>
@@ -250,48 +157,154 @@ const getWelcomeEmailHtml = (data) => {
                   </td>
                 </tr>
               </table>
-
             </td>
           </tr>
 
-          <!-- Sleek Kurk-Style Dark Footer -->
+          <!-- 4b. PRODUCT BLOCK: BROADKILLER SURFACE SPRAY -->
           <tr>
-            <td style="background-color: #08120c; padding: 42px 32px 32px 32px; text-align: center;">
-              <!-- Footer Logo -->
-              <h2 style="margin: 0 0 24px 0; font-family: 'Times New Roman', Georgia, serif; font-size: 22px; letter-spacing: 4px; color: #ffffff; text-transform: uppercase;">
-                HAIFLY TRAP
-              </h2>
-
-              <!-- Rounded Pill Links (Kurk Style) -->
-              <table role="presentation" border="0" cellspacing="0" cellpadding="0" align="center" style="margin-bottom: 32px;">
+            <td style="background-color: #ffffff; padding: 0 0 36px;">
+              <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0">
                 <tr>
-                  <td align="center" style="padding: 0 6px 10px 6px;">
-                    <a href="${shopUrl}" target="_blank" style="display: inline-block; padding: 9px 20px; font-size: 12px; font-weight: 600; color: #ffffff; text-decoration: none; border: 1px solid rgba(255,255,255,0.3); border-radius: 999px;">
+                  <td style="padding: 0;">
+                    <img src="${sprayImg}" alt="Broadkiller Surface Spray" width="600" style="display: block; width: 100%; max-width: 600px; height: 280px; object-fit: cover; object-position: center;" />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="mobile-padding" style="padding: 24px 44px 0; text-align: left;">
+                    <div class="prod-title" style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 28px; line-height: 32px; font-weight: 900; text-transform: uppercase; color: #071a0e; margin-bottom: 12px; letter-spacing: -0.3px;">
+                      BROADKILLER SURFACE SPRAY
+                    </div>
+                    <p style="margin: 0 0 16px 0; font-size: 14px; line-height: 24px; color: #374151;">
+                      A premium, 100% odourless botanical insecticide — safe for children, pets, and poultry. Powerful enough to end an infestation, gentle enough for daily home use.
+                    </p>
+                    <p style="margin: 0 0 4px 0; font-size: 13.5px; line-height: 22px; color: #6b7280; font-style: italic; border-left: 3px solid #c9a84c; padding-left: 14px;">
+                      "Completely odourless and incredibly effective. With toddlers at home, Broadkiller gave me peace of mind I didn't know was possible."
+                    </p>
+                    <p style="margin: 0 0 20px 0; font-size: 12px; color: #9ca3af; padding-left: 17px;">
+                      — Mrs. Chioma O., Homeowner, Lekki, Lagos
+                    </p>
+                    <table role="presentation" border="0" cellspacing="0" cellpadding="0">
+                      <tr>
+                        <td align="center" style="background-color: #0f5238; border-radius: 999px;">
+                          <a href="${shopUrl}" target="_blank" style="display: inline-block; padding: 13px 32px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 11px; font-weight: 800; letter-spacing: 1px; color: #ffffff; text-decoration: none; border-radius: 999px; text-transform: uppercase;">
+                            Get Yours &rarr;
+                          </a>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- 4c. PRODUCT BLOCK: SAFE FOR FAMILIES & RESTAURANTS -->
+          <tr>
+            <td style="background-color: #ffffff; padding: 0 0 40px;">
+              <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td style="padding: 0;">
+                    <img src="${safeImg}" alt="Safe for Families &amp; Restaurants" width="600" style="display: block; width: 100%; max-width: 600px; height: 280px; object-fit: cover; object-position: center;" />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="mobile-padding" style="padding: 24px 44px 0; text-align: left;">
+                    <div class="prod-title" style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 28px; line-height: 32px; font-weight: 900; text-transform: uppercase; color: #071a0e; margin-bottom: 12px; letter-spacing: -0.3px;">
+                      PROVEN SAFE. PROVEN EFFECTIVE.
+                    </div>
+                    <p style="margin: 0 0 16px 0; font-size: 14px; line-height: 24px; color: #374151;">
+                      From open-air restaurants in Abuja to poultry farms in Kaduna — Haifly Trap works wherever you need it, without compromising the health of the people and animals you love.
+                    </p>
+                    <p style="margin: 0 0 4px 0; font-size: 13.5px; line-height: 22px; color: #6b7280; font-style: italic; border-left: 3px solid #c9a84c; padding-left: 14px;">
+                      "After setting up Haifly Traps in our outdoor terrace, customer complaints about flies dropped to absolute zero."
+                    </p>
+                    <p style="margin: 0 0 20px 0; font-size: 12px; color: #9ca3af; padding-left: 17px;">
+                      — Femi A., Restaurant Manager, Abuja
+                    </p>
+                    <table role="presentation" border="0" cellspacing="0" cellpadding="0">
+                      <tr>
+                        <td align="center" style="background-color: #0f5238; border-radius: 999px;">
+                          <a href="${shopUrl}" target="_blank" style="display: inline-block; padding: 13px 32px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 11px; font-weight: 800; letter-spacing: 1px; color: #ffffff; text-decoration: none; border-radius: 999px; text-transform: uppercase;">
+                            Shop All Products &rarr;
+                          </a>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- 5. WHATSAPP STRIP (Seamless background transition) -->
+          <tr>
+            <td class="mobile-padding" style="background-color: #f7faf8; padding: 26px 44px;">
+              <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td width="56" valign="middle" style="width: 56px; padding-right: 16px;">
+                    <img src="${riderImg}" alt="Delivery &amp; Support" width="50" height="50" style="display: block; width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #d1fae5;" />
+                  </td>
+                  <td valign="middle" style="text-align: left;">
+                    <strong style="display: block; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; font-weight: 800; color: #071a0e; margin-bottom: 2px;">
+                      I'm just one message away.
+                    </strong>
+                    <span style="font-size: 12px; color: #6b7280;">
+                      Chat with Ifi &bull; Bulk farm setups &bull; Questions welcome
+                    </span>
+                  </td>
+                  <td align="right" valign="middle">
+                    <table role="presentation" border="0" cellspacing="0" cellpadding="0">
+                      <tr>
+                        <td align="center" style="background-color: #25D366; border-radius: 999px; box-shadow: 0 4px 14px rgba(37,211,102,0.3);">
+                          <a href="${whatsappUrl}" target="_blank" style="display: inline-block; padding: 11px 20px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 11px; font-weight: 800; color: #ffffff; text-decoration: none; border-radius: 999px; white-space: nowrap;">
+                            Chat on WhatsApp &rarr;
+                          </a>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- 6. SLEEK DARK FOOTER -->
+          <tr>
+            <td style="background-color: #050d07; padding: 42px 32px 36px; text-align: center;">
+              <div style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 18px; font-weight: 900; letter-spacing: 7px; color: #ffffff; text-transform: uppercase; margin-bottom: 20px;">
+                HAIFLY TRAP
+              </div>
+
+              <!-- Pill Links -->
+              <table role="presentation" border="0" cellspacing="0" cellpadding="0" align="center" style="margin-bottom: 24px;">
+                <tr>
+                  <td style="padding: 0 4px;">
+                    <a href="${shopUrl}" target="_blank" style="display: inline-block; padding: 8px 18px; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.8); font-family: 'Plus Jakarta Sans', sans-serif; font-size: 10px; font-weight: 700; border-radius: 999px; text-decoration: none;">
                       Shop Traps
                     </a>
                   </td>
-                  <td align="center" style="padding: 0 6px 10px 6px;">
-                    <a href="${whatsappUrl}" target="_blank" style="display: inline-block; padding: 9px 20px; font-size: 12px; font-weight: 600; color: #ffffff; text-decoration: none; border: 1px solid rgba(255,255,255,0.3); border-radius: 999px;">
+                  <td style="padding: 0 4px;">
+                    <a href="${whatsappUrl}" target="_blank" style="display: inline-block; padding: 8px 18px; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.8); font-family: 'Plus Jakarta Sans', sans-serif; font-size: 10px; font-weight: 700; border-radius: 999px; text-decoration: none;">
                       WhatsApp Ifi
                     </a>
                   </td>
-                  <td align="center" style="padding: 0 6px 10px 6px;">
-                    <a href="${trackUrl}" target="_blank" style="display: inline-block; padding: 9px 20px; font-size: 12px; font-weight: 600; color: #ffffff; text-decoration: none; border: 1px solid rgba(255,255,255,0.3); border-radius: 999px;">
+                  <td style="padding: 0 4px;">
+                    <a href="${trackUrl}" target="_blank" style="display: inline-block; padding: 8px 18px; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.8); font-family: 'Plus Jakarta Sans', sans-serif; font-size: 10px; font-weight: 700; border-radius: 999px; text-decoration: none;">
                       Track Order
                     </a>
                   </td>
                 </tr>
               </table>
 
-              <!-- Physical Address & Copyright -->
-              <p style="margin: 0 0 8px 0; font-size: 12px; line-height: 18px; color: #64748b;">
-                Eastline Shopping Complex, Abraham Adesanya, Ajah, Lagos State, Nigeria
+              <!-- Legal & Address -->
+              <p style="margin: 0 0 6px 0; font-size: 11px; line-height: 18px; color: #4b5563;">
+                Eastline Shopping Complex, Abraham Adesanya, Ajah, Lagos, Nigeria
               </p>
-              <p style="margin: 0 0 16px 0; font-size: 11px; color: #475569;">
+              <p style="margin: 0 0 14px 0; font-size: 10px; color: #374151;">
                 &copy; 2026 Haifly Trap Nigeria. All rights reserved.
               </p>
-              <p style="margin: 0; font-size: 11px; color: #334155;">
-                You received this email because you registered an account at haiflytrapng.com.
+              <p style="margin: 0; font-size: 10px; color: #262626;">
+                You received this email because you created an account at haiflytrapng.com.
               </p>
             </td>
           </tr>
