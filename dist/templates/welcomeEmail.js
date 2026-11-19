@@ -147,14 +147,8 @@ const getWelcomeEmailHtml = (data) => {
                     <div class="prod-title" style="font-family: 'Plus Jakarta Sans', Arial, sans-serif; font-size: 28px; line-height: 32px; font-weight: 900; text-transform: uppercase; color: ${onSurface}; margin-bottom: 12px; letter-spacing: -0.3px;">
                       THE HAI FLY TRAP
                     </div>
-                    <p style="margin: 0 0 16px 0; font-size: 14.5px; line-height: 26px; color: ${onSurface};">
+                    <p style="margin: 0 0 24px 0; font-size: 14.5px; line-height: 26px; color: ${onSurface};">
                       Meet the world's first commercially viable housefly trap — built for homes, farms, restaurants, and any space that deserves to breathe clean air.
-                    </p>
-                    <p style="margin: 0 0 6px 0; font-size: 14px; line-height: 24px; color: #475569; font-style: italic; border-left: 3px solid ${gold}; padding-left: 14px;">
-                      "The Hai Fly Trap caught thousands of flies in my poultry farm within 48 hours. No chemicals, no mess. A game changer for Nigerian farmers."
-                    </p>
-                    <p style="margin: 0 0 20px 0; font-size: 12.5px; color: #94a3b8; padding-left: 17px;">
-                      — Alhaji Garba M., Commercial Poultry Owner, Kaduna
                     </p>
                     <table role="presentation" border="0" cellspacing="0" cellpadding="0">
                       <tr>
@@ -185,14 +179,8 @@ const getWelcomeEmailHtml = (data) => {
                     <div class="prod-title" style="font-family: 'Plus Jakarta Sans', Arial, sans-serif; font-size: 28px; line-height: 32px; font-weight: 900; text-transform: uppercase; color: ${onSurface}; margin-bottom: 12px; letter-spacing: -0.3px;">
                       BROADKILLER SURFACE SPRAY
                     </div>
-                    <p style="margin: 0 0 16px 0; font-size: 14.5px; line-height: 26px; color: ${onSurface};">
+                    <p style="margin: 0 0 24px 0; font-size: 14.5px; line-height: 26px; color: ${onSurface};">
                       A premium, 100% odourless botanical insecticide — safe for children, pets, and poultry. Powerful enough to end an infestation, gentle enough for daily home use.
-                    </p>
-                    <p style="margin: 0 0 6px 0; font-size: 14px; line-height: 24px; color: #475569; font-style: italic; border-left: 3px solid ${gold}; padding-left: 14px;">
-                      "Completely odourless and incredibly effective. With toddlers at home, Broadkiller gave me peace of mind I didn't know was possible."
-                    </p>
-                    <p style="margin: 0 0 20px 0; font-size: 12.5px; color: #94a3b8; padding-left: 17px;">
-                      — Mrs. Chioma O., Homeowner, Lekki Phase 1, Lagos
                     </p>
                     <table role="presentation" border="0" cellspacing="0" cellpadding="0">
                       <tr>
@@ -223,14 +211,8 @@ const getWelcomeEmailHtml = (data) => {
                     <div class="prod-title" style="font-family: 'Plus Jakarta Sans', Arial, sans-serif; font-size: 28px; line-height: 32px; font-weight: 900; text-transform: uppercase; color: ${onSurface}; margin-bottom: 12px; letter-spacing: -0.3px;">
                       PROVEN SAFE. PROVEN EFFECTIVE.
                     </div>
-                    <p style="margin: 0 0 16px 0; font-size: 14.5px; line-height: 26px; color: ${onSurface};">
+                    <p style="margin: 0 0 24px 0; font-size: 14.5px; line-height: 26px; color: ${onSurface};">
                       From open-air restaurants in Abuja to poultry farms in Kaduna — Haifly Trap works wherever you need it, without compromising the health of the people and animals you love.
-                    </p>
-                    <p style="margin: 0 0 6px 0; font-size: 14px; line-height: 24px; color: #475569; font-style: italic; border-left: 3px solid ${gold}; padding-left: 14px;">
-                      "After setting up Haifly Traps in our outdoor terrace, customer complaints about flies dropped to absolute zero. Guests eat in total comfort."
-                    </p>
-                    <p style="margin: 0 0 20px 0; font-size: 12.5px; color: #94a3b8; padding-left: 17px;">
-                      — Femi A., Lounge &amp; Restaurant Manager, Abuja
                     </p>
                     <table role="presentation" border="0" cellspacing="0" cellpadding="0">
                       <tr>
