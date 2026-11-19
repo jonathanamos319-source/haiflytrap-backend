@@ -30,11 +30,17 @@ export const getWelcomeEmailHtml = (data: WelcomeEmailData): string => {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light">
+  <meta name="supported-color-schemes" content="light">
   <title>Welcome to Haifly Trap</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,400;9..40,600;9..40,700;9..40,800&family=Libre+Caslon+Text:ital@1&display=swap" rel="stylesheet">
   <style>
+    :root {
+      color-scheme: light;
+      supported-color-schemes: light;
+    }
     body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
     table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
     img { -ms-interpolation-mode: bicubic; border: 0; outline: none; text-decoration: none; }
@@ -122,7 +128,7 @@ export const getWelcomeEmailHtml = (data: WelcomeEmailData): string => {
                   </td>
                   <td align="right" valign="middle">
                     <a href="${shopUrl}" target="_blank" class="text-link" style="font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #153f35; text-decoration: none;">
-                      Shop solutions &nearr;
+                      Shop solutions &#8599;
                     </a>
                   </td>
                 </tr>
@@ -151,9 +157,8 @@ export const getWelcomeEmailHtml = (data: WelcomeEmailData): string => {
                   </td>
                 </tr>
                 <tr>
-                  <td align="center" style="padding-top: 24px; position: relative;">
-                    <div style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); height: 120px; width: 80%; border-radius: 50%; background-color: rgba(246,201,0,0.8); filter: blur(2px);"></div>
-                    <img src="${trapImgUrl}" alt="Haifly Trap eco-friendly housefly trap" width="560" style="display: block; position: relative; z-index: 10; width: 92%; max-width: 560px; filter: drop-shadow(0 24px 24px rgba(0,0,0,0.26)); margin: 0 auto;" />
+                  <td align="center" style="padding-top: 32px;">
+                    <img src="${trapImgUrl}" alt="Haifly Trap eco-friendly housefly trap" width="560" style="display: block; width: 100%; max-width: 560px; border-radius: 16px; margin: 0 auto; box-shadow: 0 16px 40px rgba(0,0,0,0.25);" />
                   </td>
                 </tr>
               </table>
@@ -243,7 +248,7 @@ export const getWelcomeEmailHtml = (data: WelcomeEmailData): string => {
                 <tr>
                   <td align="center" style="background-color: #153f35; border-radius: 999px;">
                     <a href="${shopUrl}" target="_blank" style="display: inline-block; padding: 15px 36px; font-size: 12px; font-weight: 800; letter-spacing: 0.1em; color: #ffffff; text-decoration: none; border-radius: 999px; text-transform: uppercase;">
-                      Start shopping &nearr;
+                      Start shopping &#8599;
                     </a>
                   </td>
                 </tr>
@@ -266,7 +271,7 @@ export const getWelcomeEmailHtml = (data: WelcomeEmailData): string => {
                   </td>
                   <td align="right" valign="bottom">
                     <a href="${shopUrl}" target="_blank" class="text-link" style="font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #153f35; text-decoration: none;">
-                      See all &nearr;
+                      See all &#8599;
                     </a>
                   </td>
                 </tr>
@@ -278,10 +283,10 @@ export const getWelcomeEmailHtml = (data: WelcomeEmailData): string => {
                   <!-- Card 1: Hai Fly Trap -->
                   <td class="grid-stack" width="48%" valign="top" style="padding-right: 12px; padding-bottom: 20px;">
                     <a href="${shopUrl}" target="_blank" style="text-decoration: none; display: block; border: 1px solid rgba(21,63,53,0.12); border-radius: 16px; overflow: hidden; background-color: #ffffff;">
-                      <div style="background-color: #edf1e9; padding: 24px; text-align: center; height: 180px;">
-                        <img src="${trapImgUrl}" alt="Hai Fly Trap" style="max-height: 160px; max-width: 100%; width: auto; height: auto; object-fit: contain; margin: 0 auto; display: block;" />
+                      <div style="background-color: #ffffff; padding: 20px; text-align: center; height: 180px;">
+                        <img src="${trapImgUrl}" alt="Hai Fly Trap" style="max-height: 160px; max-width: 100%; width: auto; height: auto; object-fit: contain; margin: 0 auto; display: block; border-radius: 8px;" />
                       </div>
-                      <div style="padding: 18px;">
+                      <div style="padding: 18px; background-color: #ffffff; border-top: 1px solid rgba(21,63,53,0.08);">
                         <p style="margin: 0 0 6px 0; font-size: 10px; font-weight: 800; letter-spacing: 0.14em; color: #71827d; text-transform: uppercase;">
                           Indoor &amp; outdoor
                         </p>
@@ -289,7 +294,7 @@ export const getWelcomeEmailHtml = (data: WelcomeEmailData): string => {
                           <h3 style="margin: 0; font-size: 18px; font-weight: 800; color: #153f35;">
                             Hai Fly Trap
                           </h3>
-                          <span style="font-weight: bold; color: #153f35;">&nearr;</span>
+                          <span style="font-weight: bold; color: #153f35; font-size: 16px;">&#8599;</span>
                         </div>
                       </div>
                     </a>
@@ -298,10 +303,10 @@ export const getWelcomeEmailHtml = (data: WelcomeEmailData): string => {
                   <!-- Card 2: Broadkiller Spray -->
                   <td class="grid-stack" width="48%" valign="top" style="padding-left: 12px; padding-bottom: 20px;">
                     <a href="${shopUrl}" target="_blank" style="text-decoration: none; display: block; border: 1px solid rgba(21,63,53,0.12); border-radius: 16px; overflow: hidden; background-color: #ffffff;">
-                      <div style="background-color: #edf1e9; padding: 24px; text-align: center; height: 180px;">
-                        <img src="${broadkillerImgUrl}" alt="Broadkiller Spray" style="max-height: 160px; max-width: 100%; width: auto; height: auto; object-fit: contain; margin: 0 auto; display: block;" />
+                      <div style="background-color: #ffffff; padding: 20px; text-align: center; height: 180px;">
+                        <img src="${broadkillerImgUrl}" alt="Broadkiller Spray" style="max-height: 160px; max-width: 100%; width: auto; height: auto; object-fit: contain; margin: 0 auto; display: block; border-radius: 8px;" />
                       </div>
-                      <div style="padding: 18px;">
+                      <div style="padding: 18px; background-color: #ffffff; border-top: 1px solid rgba(21,63,53,0.08);">
                         <p style="margin: 0 0 6px 0; font-size: 10px; font-weight: 800; letter-spacing: 0.14em; color: #71827d; text-transform: uppercase;">
                           Botanical formula
                         </p>
@@ -309,7 +314,7 @@ export const getWelcomeEmailHtml = (data: WelcomeEmailData): string => {
                           <h3 style="margin: 0; font-size: 18px; font-weight: 800; color: #153f35;">
                             Broadkiller Spray
                           </h3>
-                          <span style="font-weight: bold; color: #153f35;">&nearr;</span>
+                          <span style="font-weight: bold; color: #153f35; font-size: 16px;">&#8599;</span>
                         </div>
                       </div>
                     </a>
@@ -338,7 +343,7 @@ export const getWelcomeEmailHtml = (data: WelcomeEmailData): string => {
                       <tr>
                         <td align="center" style="background-color: #f6c900; border-radius: 999px;">
                           <a href="${whatsappUrl}" target="_blank" style="display: inline-block; padding: 15px 36px; font-size: 12px; font-weight: 800; letter-spacing: 0.1em; color: #153f35; text-decoration: none; border-radius: 999px; text-transform: uppercase;">
-                            Chat on WhatsApp &nearr;
+                            Chat on WhatsApp &#8599;
                           </a>
                         </td>
                       </tr>
