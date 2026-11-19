@@ -17,6 +17,7 @@ const getWelcomeEmailHtml = (data) => {
     const homeUrl = 'https://www.haiflytrapng.com/';
     // Public asset paths on haiflytrapng.com
     const logoUrl = 'https://www.haiflytrapng.com/haifly/logo.webp';
+    const websiteLogoUrl = 'https://www.haiflytrapng.com/products/HAIFLYLOGO.webp';
     const trapImgUrl = 'https://www.haiflytrapng.com/haifly/hai-fly-trap.png';
     const broadkillerImgUrl = 'https://www.haiflytrapng.com/haifly/broadkiller.png';
     return `<!DOCTYPE html>
@@ -343,40 +344,125 @@ const getWelcomeEmailHtml = (data) => {
             </td>
           </tr>
 
-          <!-- Footer -->
+          <!-- Website-Matched Footer (Triple Wave + Official Logo + Exact Website Footer Styling) -->
           <tr>
-            <td class="mobile-padding" style="background-color: #0d3028; padding: 40px 36px; color: #ffffff;">
-              <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="border-bottom: 1px solid rgba(255,255,255,0.12); padding-bottom: 28px;">
+            <td style="background-color: #1a5c38; padding: 0; margin: 0; line-height: 0;">
+              <!-- Wave Transition (Matches app/src/components/FooterWave.tsx) -->
+              <div style="background-color: #153f35; line-height: 0; font-size: 0;">
+                <svg width="100%" height="70" viewBox="0 0 1440 200" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" style="display: block; width: 100%; height: 70px; background-color: #153f35; vertical-align: bottom;">
+                  <path d="M0,60 C200,0 400,120 720,40 C1040,-40 1240,80 1440,20 L1440,201 L0,201 Z" fill="#5a9e6f"/>
+                  <path d="M0,100 C250,30 450,140 760,70 C1070,0 1280,110 1440,60 L1440,201 L0,201 Z" fill="#2d6e45"/>
+                  <path d="M0,140 C300,90 550,170 820,120 C1090,70 1320,150 1440,110 L1440,201 L0,201 Z" fill="#1a5c38"/>
+                </svg>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="mobile-padding" style="background-color: #1a5c38; padding: 36px 36px 32px; color: #ffffff;">
+              <!-- Brand row: Logo + est 2018 -->
+              <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-bottom: 18px;">
                 <tr>
                   <td align="left" valign="middle">
-                    <img src="${logoUrl}" alt="Haifly Trap" width="140" style="display: block; height: 46px; width: auto; object-fit: contain; filter: brightness(0) invert(1);" />
+                    <table role="presentation" border="0" cellspacing="0" cellpadding="0">
+                      <tr>
+                        <td valign="middle" style="padding-right: 12px;">
+                          <a href="${homeUrl}" target="_blank" style="text-decoration: none;">
+                            <img src="${websiteLogoUrl}" alt="Haifly Trap" width="150" style="display: block; height: 46px; width: auto; object-fit: contain;" />
+                          </a>
+                        </td>
+                        <td valign="middle">
+                          <span class="font-display" style="font-family: 'Bebas Neue', Arial, sans-serif; font-weight: 900; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: #f6c900; display: inline-block; padding-top: 4px;">
+                            EST 2018
+                          </span>
+                        </td>
+                      </tr>
+                    </table>
                   </td>
-                  <td align="right" valign="middle">
-                    <a href="${shopUrl}" target="_blank" style="color: #ffffff; font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; margin-left: 18px;">
-                      Shop
+                </tr>
+              </table>
+
+              <!-- Tagline Description -->
+              <p style="margin: 0 0 22px; font-size: 13.5px; line-height: 22px; color: rgba(255,255,255,0.78); max-width: 520px;">
+                Nigeria's premier eco-friendly housefly control provider. Protecting homes from Ikeja to Abuja with naturally derived solutions.
+              </p>
+
+              <!-- Social Links -->
+              <table role="presentation" border="0" cellspacing="0" cellpadding="0" style="margin-bottom: 28px;">
+                <tr>
+                  <td style="padding-right: 10px;">
+                    <a href="https://instagram.com" target="_blank" style="display: inline-block; width: 36px; height: 36px; border-radius: 50%; background-color: rgba(255,255,255,0.12); text-align: center; line-height: 36px; color: #ffffff; text-decoration: none; font-size: 12px; font-weight: bold;">
+                      IG
                     </a>
-                    <a href="mailto:hello@haiflytrap.com" style="color: #ffffff; font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; margin-left: 18px;">
-                      Email us
+                  </td>
+                  <td style="padding-right: 10px;">
+                    <a href="https://twitter.com" target="_blank" style="display: inline-block; width: 36px; height: 36px; border-radius: 50%; background-color: rgba(255,255,255,0.12); text-align: center; line-height: 36px; color: #ffffff; text-decoration: none; font-size: 12px; font-weight: bold;">
+                      X
                     </a>
-                    <a href="${whatsappUrl}" target="_blank" style="color: #ffffff; font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; margin-left: 18px;">
-                      WhatsApp
+                  </td>
+                  <td>
+                    <a href="https://facebook.com" target="_blank" style="display: inline-block; width: 36px; height: 36px; border-radius: 50%; background-color: rgba(255,255,255,0.12); text-align: center; line-height: 36px; color: #ffffff; text-decoration: none; font-size: 12px; font-weight: bold;">
+                      FB
                     </a>
                   </td>
                 </tr>
               </table>
 
-              <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="padding-top: 24px; font-size: 11px; line-height: 20px; color: rgba(255,255,255,0.52);">
+              <!-- 2-Column Links Grid -->
+              <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-bottom: 28px;">
                 <tr>
-                  <td align="left" valign="top">
-                    Haifly Trap &bull; Est. 2018 &bull; NAFDAC: A10-101283<br>
-                    Block D1181HFP, Eastline Complex, Abraham Adesanya, Ajah, Lagos
+                  <!-- Quick Links -->
+                  <td class="grid-stack" width="46%" valign="top" style="padding-bottom: 20px; padding-right: 16px;">
+                    <h4 class="font-display" style="font-family: 'Bebas Neue', Arial, sans-serif; font-size: 16px; letter-spacing: 0.08em; text-transform: uppercase; color: #f6c900; margin: 0 0 12px 0;">
+                      Quick Links
+                    </h4>
+                    <p style="margin: 0 0 8px 0; font-size: 13px;">
+                      <a href="${shopUrl}" target="_blank" style="color: rgba(255,255,255,0.82); text-decoration: none;">Shop All</a>
+                    </p>
+                    <p style="margin: 0 0 8px 0; font-size: 13px;">
+                      <a href="${homeUrl}reviews" target="_blank" style="color: rgba(255,255,255,0.82); text-decoration: none;">Our Story</a>
+                    </p>
+                    <p style="margin: 0 0 8px 0; font-size: 13px;">
+                      <a href="${homeUrl}track" target="_blank" style="color: rgba(255,255,255,0.82); text-decoration: none;">Track Order</a>
+                    </p>
+                    <p style="margin: 0; font-size: 13px;">
+                      <a href="${shopUrl}" target="_blank" style="color: rgba(255,255,255,0.82); text-decoration: none;">Bulk Orders</a>
+                    </p>
                   </td>
-                  <td align="right" valign="top">
-                    +234 803 130 1311<br>
-                    hello@haiflytrap.com
+
+                  <!-- Direct Contact -->
+                  <td class="grid-stack" width="54%" valign="top" style="padding-bottom: 20px;">
+                    <h4 class="font-display" style="font-family: 'Bebas Neue', Arial, sans-serif; font-size: 16px; letter-spacing: 0.08em; text-transform: uppercase; color: #f6c900; margin: 0 0 12px 0;">
+                      Direct Contact
+                    </h4>
+                    <p style="margin: 0 0 8px 0; font-size: 14px; color: #ffffff; font-weight: 700;">
+                      <a href="tel:+2348031301311" style="color: #ffffff; text-decoration: none;">
+                        <span style="color: #f6c900; margin-right: 6px;">&#9742;</span> +234 803 130 1311
+                      </a>
+                    </p>
+                    <p style="margin: 0 0 8px 0; font-size: 13px; color: rgba(255,255,255,0.82);">
+                      <a href="mailto:hello@haiflytrap.com" style="color: rgba(255,255,255,0.82); text-decoration: none;">
+                        <span style="color: #f6c900; margin-right: 6px;">&#9993;</span> hello@haiflytrap.com
+                      </a>
+                    </p>
+                    <p style="margin: 0; font-size: 12px; line-height: 18px; color: rgba(255,255,255,0.72);">
+                      <span style="color: #f6c900; margin-right: 4px;">&#9678;</span> Block D1181HFP, Eastline Complex, Abraham Adesanya, Ajah, Lagos
+                    </p>
                   </td>
                 </tr>
               </table>
+
+              <!-- Bottom Bar -->
+              <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="border-top: 1px solid rgba(255,255,255,0.12); padding-top: 20px;">
+                <tr>
+                  <td class="grid-stack" align="left" valign="top" style="font-size: 11.5px; line-height: 18px; color: rgba(255,255,255,0.55); padding-bottom: 6px;">
+                    &copy; 2026 Haifly Trap. Naturally Powerful Insecticide. | NAFDAC: A10-101283
+                  </td>
+                  <td class="grid-stack" align="right" valign="top" style="font-size: 11.5px; line-height: 18px; color: rgba(255,255,255,0.55);">
+                    Secured by <strong style="color: rgba(255,255,255,0.85);">Paystack &bull; Flutterwave</strong>
+                  </td>
+                </tr>
+              </table>
+
             </td>
           </tr>
 
