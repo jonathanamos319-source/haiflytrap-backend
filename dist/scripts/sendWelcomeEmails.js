@@ -1,7 +1,15 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendWelcomeEmailToUser = sendWelcomeEmailToUser;
 exports.runWelcomeEmailCron = runWelcomeEmailCron;
+const path_1 = __importDefault(require("path"));
+const dotenv_1 = __importDefault(require("dotenv"));
+// Ensure .env is loaded regardless of cPanel cron working directory
+dotenv_1.default.config({ path: path_1.default.resolve(__dirname, '../../.env') });
+dotenv_1.default.config();
 const db_1 = require("../config/db");
 const email_1 = require("../config/email");
 const welcomeEmail_1 = require("../templates/welcomeEmail");
@@ -86,12 +94,14 @@ async function runWelcomeEmailCron(limit = 25) {
 // When executed directly from CLI / cPanel Cron Job
 if (require.main === module) {
     runWelcomeEmailCron()
-        .then(() => {
+        .then(async () => {
         console.log('[Welcome Cron] Process completed successfully.');
+        await db_1.pool.end();
         process.exit(0);
     })
-        .catch((err) => {
+        .catch(async (err) => {
         console.error('[Welcome Cron] Process exited with error:', err);
+        await db_1.pool.end().catch(() => { });
         process.exit(1);
     });
 }

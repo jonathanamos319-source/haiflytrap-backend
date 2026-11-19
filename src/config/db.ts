@@ -1,5 +1,9 @@
 import { Pool } from 'pg';
+import path from 'path';
 import dotenv from 'dotenv';
+
+// Load .env relative to server root first, then fallback to cwd
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 dotenv.config();
 
 if (!process.env.DATABASE_URL) {

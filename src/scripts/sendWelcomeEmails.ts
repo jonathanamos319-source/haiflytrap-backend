@@ -1,3 +1,10 @@
+import path from 'path';
+import dotenv from 'dotenv';
+
+// Ensure .env is loaded regardless of cPanel cron working directory
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+dotenv.config();
+
 import { pool } from '../config/db';
 import { sendMail } from '../config/email';
 import { getWelcomeEmailHtml, getWelcomeEmailSubject } from '../templates/welcomeEmail';
@@ -99,12 +106,14 @@ export async function runWelcomeEmailCron(limit = 25): Promise<{ processed: numb
 // When executed directly from CLI / cPanel Cron Job
 if (require.main === module) {
   runWelcomeEmailCron()
-    .then(() => {
+    .then(async () => {
       console.log('[Welcome Cron] Process completed successfully.');
+      await pool.end();
       process.exit(0);
     })
-    .catch((err) => {
+    .catch(async (err) => {
       console.error('[Welcome Cron] Process exited with error:', err);
+      await pool.end().catch(() => {});
       process.exit(1);
     });
 }
