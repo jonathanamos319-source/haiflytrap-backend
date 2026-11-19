@@ -52,13 +52,13 @@ async function runWelcomeEmailCron(limit = 25) {
     console.log(`[Welcome Cron] Starting welcome email cron job at ${new Date().toISOString()}...`);
     try {
         // Ensure tracking columns exist
-        await db_1.pool.query(`
-      ALTER TABLE users
-      ADD COLUMN IF NOT EXISTS welcome_email_sent BOOLEAN DEFAULT false,
-      ADD COLUMN IF NOT EXISTS welcome_email_sent_at TIMESTAMPTZ;
-    `).catch(() => {
-            // Column might already exist or DDL restricted
-        });
+        try {
+            await db_1.pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS welcome_email_sent BOOLEAN DEFAULT false;`);
+            await db_1.pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS welcome_email_sent_at TIMESTAMPTZ;`);
+        }
+        catch (colErr) {
+            console.warn('[Welcome Cron] Notice on column creation:', colErr);
+        }
         // Find customers who have not received their welcome email
         const query = `
       SELECT id, email, name, created_at
