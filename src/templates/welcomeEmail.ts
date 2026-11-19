@@ -21,7 +21,7 @@ export const getWelcomeEmailHtml = (data: WelcomeEmailData): string => {
     encodeURIComponent('Hi Ifi, I just joined Haifly Trap and want to set up my No Fly Zone!');
 
   // Production image assets hosted on haiflytrapng.com
-  const heroImg = 'https://www.haiflytrapng.com/images/lanscape-1.png';
+  const logoImg = 'https://www.haiflytrapng.com/web-app-manifest-512x512.png';
   const trapImg = 'https://www.haiflytrapng.com/images/TRAPIMG1.png';
   const sprayImg = 'https://www.haiflytrapng.com/images/Broadkillersurefacespray.png';
   const safeImg = 'https://www.haiflytrapng.com/images/SAFERPOST.png';
@@ -68,24 +68,20 @@ export const getWelcomeEmailHtml = (data: WelcomeEmailData): string => {
           
           <!-- 1. HERO -->
           <tr>
-            <td style="position: relative; background-color: #0a3d2a; padding: 0;">
-              <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0">
+            <td style="background: linear-gradient(180deg, #0a3d2a 0%, #0f5238 100%); padding: 44px 28px 36px; text-align: center;">
+              <table role="presentation" border="0" cellspacing="0" cellpadding="0" align="center" style="margin: 0 auto 20px;">
                 <tr>
-                  <td style="padding: 0;">
-                    <img src="${heroImg}" alt="Haifly Trap No Fly Zone" width="600" style="display: block; width: 100%; max-width: 600px; height: 280px; object-fit: cover; object-position: center top;" />
-                  </td>
-                </tr>
-                <tr>
-                  <td style="background: linear-gradient(180deg, rgba(10,61,42,0.3) 0%, rgba(10,61,42,0.92) 100%), #0a3d2a; padding: 28px 36px 32px; text-align: left;">
-                    <p style="margin: 0 0 8px 0; font-family: 'Plus Jakarta Sans', Arial, sans-serif; font-size: 10px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: ${gold};">
-                      HAIFLY TRAP &bull; EST. 2018 &bull; NIGERIA
-                    </p>
-                    <h1 class="hero-title" style="margin: 0; font-family: 'Plus Jakarta Sans', Arial, sans-serif; font-size: 32px; line-height: 38px; font-weight: 900; text-transform: uppercase; color: #ffffff; letter-spacing: -0.4px;">
-                      WELCOME TO THE<br><span style="color: ${goldLight};">NO FLY ZONE</span> FAMILY.
-                    </h1>
+                  <td align="center">
+                    <img src="${logoImg}" alt="Haifly Trap" width="130" height="130" style="display: block; width: 130px; height: 130px; border-radius: 28px; box-shadow: 0 14px 32px rgba(0,0,0,0.35);" />
                   </td>
                 </tr>
               </table>
+              <p style="margin: 0 0 8px 0; font-family: 'Plus Jakarta Sans', Arial, sans-serif; font-size: 10px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: ${gold};">
+                HAIFLY TRAP &bull; EST. 2018 &bull; NIGERIA
+              </p>
+              <h1 class="hero-title" style="margin: 0; font-family: 'Plus Jakarta Sans', Arial, sans-serif; font-size: 32px; line-height: 38px; font-weight: 900; text-transform: uppercase; color: #ffffff; letter-spacing: -0.4px;">
+                WELCOME TO THE<br><span style="color: ${goldLight};">NO FLY ZONE</span> FAMILY.
+              </h1>
             </td>
           </tr>
 
