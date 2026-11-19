@@ -32,13 +32,23 @@ export async function sendWelcomeEmailToUser(user: WelcomeUser): Promise<boolean
     });
 
     if (result.success) {
+      // Record sent email in dedicated tracking table
+      await pool.query(
+        `INSERT INTO welcome_email_logs (user_id, email, sent_at)
+         VALUES ($1, $2, NOW())
+         ON CONFLICT (user_id) DO NOTHING;`,
+        [String(user.id), user.email]
+      );
+
+      // Also attempt to update users table if column exists, ignore if not
       await pool.query(
         `UPDATE users
          SET welcome_email_sent = true,
              welcome_email_sent_at = NOW()
          WHERE id = $1`,
         [user.id]
-      );
+      ).catch(() => {});
+
       console.log(`[Welcome Email] Successfully sent welcome email to: ${user.email}`);
       return true;
     } else {
@@ -58,22 +68,24 @@ export async function runWelcomeEmailCron(limit = 25): Promise<{ processed: numb
   console.log(`[Welcome Cron] Starting welcome email cron job at ${new Date().toISOString()}...`);
 
   try {
-    // Ensure tracking columns exist
-    try {
-      await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS welcome_email_sent BOOLEAN DEFAULT false;`);
-      await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS welcome_email_sent_at TIMESTAMPTZ;`);
-    } catch (colErr) {
-      console.warn('[Welcome Cron] Notice on column creation:', colErr);
-    }
+    // Ensure dedicated tracking table exists (owned by this DB user, never requires ALTER TABLE users)
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS welcome_email_logs (
+        user_id TEXT PRIMARY KEY,
+        email TEXT,
+        sent_at TIMESTAMPTZ DEFAULT NOW()
+      );
+    `);
 
     // Find customers who have not received their welcome email
     const query = `
-      SELECT id, email, name, created_at
-      FROM users
-      WHERE role = 'customer'
-        AND (welcome_email_sent IS NULL OR welcome_email_sent = false)
-        AND email IS NOT NULL
-      ORDER BY created_at ASC
+      SELECT u.id, u.email, u.name, u.created_at
+      FROM users u
+      LEFT JOIN welcome_email_logs w ON u.id::text = w.user_id
+      WHERE u.role = 'customer'
+        AND w.user_id IS NULL
+        AND u.email IS NOT NULL
+      ORDER BY u.created_at ASC
       LIMIT $1;
     `;
 
