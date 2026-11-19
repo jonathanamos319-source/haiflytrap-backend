@@ -23,6 +23,8 @@ CREATE TABLE users (
   avatar_url TEXT,
   google_id TEXT UNIQUE,
   role TEXT NOT NULL DEFAULT 'customer',  -- 'customer' | 'admin' | 'handler'
+  welcome_email_sent BOOLEAN DEFAULT false,
+  welcome_email_sent_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 

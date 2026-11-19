@@ -5,6 +5,7 @@ import { OAuth2Client } from 'google-auth-library';
 import { pool } from '../config/db';
 import { signToken, setAuthCookie, clearAuthCookie, COOKIE_NAMES } from '../config/jwt';
 import { sendMail } from '../config/email';
+import { sendWelcomeEmailToUser } from '../scripts/sendWelcomeEmails';
 import { ApiResponse } from '../types';
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
@@ -76,6 +77,12 @@ export const register = async (req: Request, res: Response<ApiResponse>, next: N
     );
 
     const user = result.rows[0];
+
+    // Fire welcome email asynchronously
+    sendWelcomeEmailToUser(user).catch(err =>
+      console.error('[Auth] Failed to trigger immediate welcome email:', err)
+    );
+
     const token = signToken({
       sub: user.id,
       email: user.email,
@@ -303,6 +310,11 @@ export const googleAuth = async (req: Request, res: Response<ApiResponse>, next:
         [email, name, avatarUrl, googleId]
       );
       user = insertResult.rows[0];
+
+      // Send welcome email to new Google customer
+      sendWelcomeEmailToUser(user).catch(err =>
+        console.error('[Google Auth] Failed to trigger welcome email:', err)
+      );
     } else {
       // Link google_id and update avatar/name if missing
       const updateResult = await pool.query(
@@ -505,6 +517,11 @@ export const verifyOtp = async (req: Request, res: Response<ApiResponse>, next: 
         [normalizedEmail, displayName]
       );
       user = insertResult.rows[0];
+
+      // Send welcome email to new OTP customer
+      sendWelcomeEmailToUser(user).catch(err =>
+        console.error('[OTP Verify] Failed to trigger welcome email:', err)
+      );
     } else if (displayName && !user.name) {
       const updateResult = await pool.query(
         `UPDATE users SET name = $1 WHERE id = $2 RETURNING *`,

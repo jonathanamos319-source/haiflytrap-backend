@@ -10,6 +10,7 @@ const google_auth_library_1 = require("google-auth-library");
 const db_1 = require("../config/db");
 const jwt_1 = require("../config/jwt");
 const email_1 = require("../config/email");
+const sendWelcomeEmails_1 = require("../scripts/sendWelcomeEmails");
 const googleClient = new google_auth_library_1.OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const otpMap = new Map(); // email -> record
 const emailRateLimit = new Map(); // email -> timestamp of last request
@@ -57,6 +58,8 @@ const register = async (req, res, next) => {
        VALUES ($1, $2, $3, 'customer')
        RETURNING id, email, name, role, created_at`, [normalizedEmail, passwordHash, displayName]);
         const user = result.rows[0];
+        // Fire welcome email asynchronously
+        (0, sendWelcomeEmails_1.sendWelcomeEmailToUser)(user).catch(err => console.error('[Auth] Failed to trigger immediate welcome email:', err));
         const token = (0, jwt_1.signToken)({
             sub: user.id,
             email: user.email,
@@ -252,6 +255,8 @@ const googleAuth = async (req, res, next) => {
          VALUES ($1, $2, $3, $4, 'customer')
          RETURNING *`, [email, name, avatarUrl, googleId]);
             user = insertResult.rows[0];
+            // Send welcome email to new Google customer
+            (0, sendWelcomeEmails_1.sendWelcomeEmailToUser)(user).catch(err => console.error('[Google Auth] Failed to trigger welcome email:', err));
         }
         else {
             // Link google_id and update avatar/name if missing
@@ -429,6 +434,8 @@ const verifyOtp = async (req, res, next) => {
          VALUES ($1, $2, 'customer')
          RETURNING *`, [normalizedEmail, displayName]);
             user = insertResult.rows[0];
+            // Send welcome email to new OTP customer
+            (0, sendWelcomeEmails_1.sendWelcomeEmailToUser)(user).catch(err => console.error('[OTP Verify] Failed to trigger welcome email:', err));
         }
         else if (displayName && !user.name) {
             const updateResult = await db_1.pool.query(`UPDATE users SET name = $1 WHERE id = $2 RETURNING *`, [displayName, user.id]);

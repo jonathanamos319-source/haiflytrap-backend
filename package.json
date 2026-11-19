@@ -8,6 +8,7 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "clean": "rimraf dist",
+    "cron:welcome": "node dist/scripts/sendWelcomeEmails.js",
     "create-admin": "ts-node-dev --transpile-only scripts/create-admin.ts"
   },
   "keywords": [],
