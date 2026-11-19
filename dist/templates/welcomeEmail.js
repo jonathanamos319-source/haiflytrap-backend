@@ -15,9 +15,9 @@ const getWelcomeEmailHtml = (data) => {
     const shopUrl = 'https://www.haiflytrapng.com/shop';
     const whatsappUrl = 'https://wa.me/2348031301311';
     const homeUrl = 'https://www.haiflytrapng.com/';
-    // Public asset paths on haiflytrapng.com
-    const logoUrl = 'https://www.haiflytrapng.com/haifly/logo.webp';
-    const websiteLogoUrl = 'https://www.haiflytrapng.com/products/HAIFLYLOGO.webp';
+    // Public asset paths on haiflytrapng.com (using .png for 100% email client compatibility)
+    const logoUrl = 'https://www.haiflytrapng.com/products/HAIFLYLOGO.png';
+    const websiteLogoUrl = 'https://www.haiflytrapng.com/products/HAIFLYLOGO.png';
     const trapImgUrl = 'https://www.haiflytrapng.com/haifly/hai-fly-trap.png';
     const broadkillerImgUrl = 'https://www.haiflytrapng.com/haifly/broadkiller.png';
     return `<!DOCTYPE html>
