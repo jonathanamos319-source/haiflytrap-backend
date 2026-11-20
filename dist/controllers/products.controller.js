@@ -212,11 +212,11 @@ const deleteProduct = async (req, res, next) => {
         const fetchResult = await db_1.pool.query('SELECT * FROM products WHERE id = $1', [id]);
         const product = fetchResult.rows[0];
         if (!product) {
-            res.status(404).json({ success: false, error: 'Product not found' });
+            res.status(200).json({ success: true, message: 'Product already deleted or not found' });
             return;
         }
         if (product.cloudinary_public_id) {
-            await (0, uploadImage_1.deleteFromCloudinary)(product.cloudinary_public_id);
+            await (0, uploadImage_1.deleteFromCloudinary)(product.cloudinary_public_id).catch(() => { });
         }
         await db_1.pool.query('DELETE FROM products WHERE id = $1', [id]);
         res.status(200).json({ success: true, message: 'Product deleted successfully' });

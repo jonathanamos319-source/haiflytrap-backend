@@ -231,12 +231,12 @@ export const deleteProduct = async (req: Request, res: Response<ApiResponse>, ne
     const product = fetchResult.rows[0];
 
     if (!product) {
-      res.status(404).json({ success: false, error: 'Product not found' });
+      res.status(200).json({ success: true, message: 'Product already deleted or not found' });
       return;
     }
 
     if (product.cloudinary_public_id) {
-      await deleteFromCloudinary(product.cloudinary_public_id);
+      await deleteFromCloudinary(product.cloudinary_public_id).catch(() => {});
     }
 
     await pool.query('DELETE FROM products WHERE id = $1', [id]);
