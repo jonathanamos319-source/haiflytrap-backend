@@ -8,6 +8,7 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const helmet_1 = __importDefault(require("helmet"));
+require("./config/redis"); // Initialize Redis connection asynchronously
 const cors_2 = require("./config/cors");
 const errorHandler_1 = require("./middleware/errorHandler");
 // Routes

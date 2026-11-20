@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
+import './config/redis'; // Initialize Redis connection asynchronously
 import { corsOptions } from './config/cors';
 import { errorHandler } from './middleware/errorHandler';
 

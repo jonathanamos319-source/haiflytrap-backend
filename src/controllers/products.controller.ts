@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { pool } from '../config/db';
 import { ApiResponse } from '../types';
 import { deleteFromCloudinary } from '../middleware/uploadImage';
+import { getJsonCache, setJsonCache, invalidateProductCache } from '../config/redis';
 
 const COLUMN_MAP: Record<string, string> = {
   name: 'name',
@@ -46,15 +47,15 @@ function formatProduct(row: any) {
   const origPriceNum = row.original_price != null ? Number(row.original_price) : undefined;
   let features = row.features;
   if (typeof features === 'string') {
-    try { features = JSON.parse(features); } catch {}
+    try { features = JSON.parse(features); } catch { }
   }
   let specifications = row.specifications;
   if (typeof specifications === 'string') {
-    try { specifications = JSON.parse(specifications); } catch {}
+    try { specifications = JSON.parse(specifications); } catch { }
   }
   let images = row.images;
   if (typeof images === 'string') {
-    try { images = JSON.parse(images); } catch {}
+    try { images = JSON.parse(images); } catch { }
   }
 
   return {
@@ -88,6 +89,16 @@ function formatProduct(row: any) {
 export const getProducts = async (req: Request, res: Response<ApiResponse>, next: NextFunction) => {
   try {
     const { category } = req.query;
+    const catKey = typeof category === 'string' && category.trim() ? category.trim() : 'all';
+    const cacheKey = `cache:products:${catKey}`;
+
+    // Try Redis cache first (sub-5ms response)
+    const cached = await getJsonCache<any[]>(cacheKey);
+    if (cached) {
+      res.setHeader('X-Cache', 'HIT');
+      res.status(200).json({ success: true, data: cached });
+      return;
+    }
 
     let sql = 'SELECT * FROM products ORDER BY created_at DESC';
     const params: any[] = [];
@@ -98,7 +109,13 @@ export const getProducts = async (req: Request, res: Response<ApiResponse>, next
     }
 
     const result = await pool.query(sql, params);
-    res.status(200).json({ success: true, data: result.rows.map(formatProduct) });
+    const data = result.rows.map(formatProduct);
+
+    // Save in Redis cache for subsequent visitors (1 hour TTL)
+    setJsonCache(cacheKey, data, 3600).catch(() => {});
+
+    res.setHeader('X-Cache', 'MISS');
+    res.status(200).json({ success: true, data });
   } catch (err) {
     console.error('Internal Error (getProducts):', err);
     next(err);
@@ -153,6 +170,7 @@ export const createProduct = async (req: Request, res: Response<ApiResponse>, ne
       values
     );
 
+    await invalidateProductCache();
     res.status(201).json({ success: true, data: formatProduct(result.rows[0]) });
   } catch (err) {
     next(err);
@@ -216,6 +234,7 @@ export const updateProduct = async (req: Request, res: Response<ApiResponse>, ne
       return;
     }
 
+    await invalidateProductCache();
     res.status(200).json({ success: true, data: formatProduct(row) });
   } catch (err) {
     console.error('updateProduct error:', err);
@@ -231,6 +250,7 @@ export const deleteProduct = async (req: Request, res: Response<ApiResponse>, ne
     const product = fetchResult.rows[0];
 
     if (!product) {
+      await invalidateProductCache();
       res.status(200).json({ success: true, message: 'Product already deleted or not found' });
       return;
     }
@@ -240,6 +260,7 @@ export const deleteProduct = async (req: Request, res: Response<ApiResponse>, ne
     }
 
     await pool.query('DELETE FROM products WHERE id = $1', [id]);
+    await invalidateProductCache();
     res.status(200).json({ success: true, message: 'Product deleted successfully' });
   } catch (err) {
     next(err);

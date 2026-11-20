@@ -11,6 +11,7 @@ const db_1 = require("../config/db");
 const jwt_1 = require("../config/jwt");
 const email_1 = require("../config/email");
 const sendWelcomeEmails_1 = require("../scripts/sendWelcomeEmails");
+const redis_1 = require("../config/redis");
 const googleClient = new google_auth_library_1.OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const otpMap = new Map(); // email -> record
 const emailRateLimit = new Map(); // email -> timestamp of last request
@@ -349,6 +350,8 @@ const requestOtp = async (req, res, next) => {
             attempts: 0,
             createdAt: now,
         });
+        // Also persist in Redis with 10-minute expiry (multi-worker & restart safe)
+        (0, redis_1.storeRedisOtp)(normalizedEmail, code, name?.trim(), 600).catch(() => { });
         emailRateLimit.set(normalizedEmail, now);
         // Send email via nodemailer SMTP
         await (0, email_1.sendMail)({
@@ -398,37 +401,52 @@ const verifyOtp = async (req, res, next) => {
             return;
         }
         const normalizedEmail = email.toLowerCase().trim();
-        const record = otpMap.get(normalizedEmail);
-        if (!record) {
-            res.status(400).json({ success: false, error: 'No active verification code found. Please request a new one.' });
-            return;
-        }
-        if (Date.now() > record.expiresAt) {
+        let verifiedName = undefined;
+        // 1. Check Redis first (cross-worker Passenger safe & survives server restarts)
+        const redisResult = await (0, redis_1.verifyRedisOtp)(normalizedEmail, otp);
+        if (redisResult) {
+            if (!redisResult.success) {
+                res.status(400).json({ success: false, error: redisResult.error || 'Incorrect verification code.' });
+                return;
+            }
+            verifiedName = redisResult.name;
             otpMap.delete(normalizedEmail);
-            res.status(400).json({ success: false, error: 'Verification code has expired. Please request a new one.' });
-            return;
         }
-        if (record.attempts >= MAX_ATTEMPTS) {
+        else {
+            // 2. Fallback to in-memory otpMap
+            const record = otpMap.get(normalizedEmail);
+            if (!record) {
+                res.status(400).json({ success: false, error: 'No active verification code found. Please request a new one.' });
+                return;
+            }
+            if (Date.now() > record.expiresAt) {
+                otpMap.delete(normalizedEmail);
+                res.status(400).json({ success: false, error: 'Verification code has expired. Please request a new one.' });
+                return;
+            }
+            if (record.attempts >= MAX_ATTEMPTS) {
+                otpMap.delete(normalizedEmail);
+                res.status(429).json({ success: false, error: 'Too many incorrect attempts. Please request a new code.' });
+                return;
+            }
+            const providedHash = hashOtp(otp);
+            if (providedHash !== record.hashedCode) {
+                record.attempts += 1;
+                const remaining = MAX_ATTEMPTS - record.attempts;
+                res.status(400).json({
+                    success: false,
+                    error: `Incorrect verification code. ${remaining} attempt${remaining === 1 ? '' : 's'} remaining.`,
+                });
+                return;
+            }
+            // Code is valid! Delete record immediately (single-use)
+            verifiedName = record.name;
             otpMap.delete(normalizedEmail);
-            res.status(429).json({ success: false, error: 'Too many incorrect attempts. Please request a new code.' });
-            return;
         }
-        const providedHash = hashOtp(otp);
-        if (providedHash !== record.hashedCode) {
-            record.attempts += 1;
-            const remaining = MAX_ATTEMPTS - record.attempts;
-            res.status(400).json({
-                success: false,
-                error: `Incorrect verification code. ${remaining} attempt${remaining === 1 ? '' : 's'} remaining.`,
-            });
-            return;
-        }
-        // Code is valid! Delete record immediately (single-use)
-        otpMap.delete(normalizedEmail);
         // Upsert customer user
         const existing = await db_1.pool.query('SELECT * FROM users WHERE email = $1', [normalizedEmail]);
         let user = existing.rows[0];
-        const displayName = name?.trim() || record.name || null;
+        const displayName = name?.trim() || verifiedName || null;
         if (!user) {
             const insertResult = await db_1.pool.query(`INSERT INTO users (email, name, role)
          VALUES ($1, $2, 'customer')

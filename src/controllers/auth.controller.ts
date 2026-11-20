@@ -6,6 +6,7 @@ import { pool } from '../config/db';
 import { signToken, setAuthCookie, clearAuthCookie, COOKIE_NAMES } from '../config/jwt';
 import { sendMail } from '../config/email';
 import { sendWelcomeEmailToUser } from '../scripts/sendWelcomeEmails';
+import { storeRedisOtp, verifyRedisOtp } from '../config/redis';
 import { ApiResponse } from '../types';
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
@@ -419,6 +420,9 @@ export const requestOtp = async (req: Request, res: Response<ApiResponse>, next:
       createdAt: now,
     });
 
+    // Also persist in Redis with 10-minute expiry (multi-worker & restart safe)
+    storeRedisOtp(normalizedEmail, code, name?.trim(), 600).catch(() => {});
+
     emailRateLimit.set(normalizedEmail, now);
 
     // Send email via nodemailer SMTP
@@ -471,43 +475,59 @@ export const verifyOtp = async (req: Request, res: Response<ApiResponse>, next: 
     }
 
     const normalizedEmail = email.toLowerCase().trim();
-    const record = otpMap.get(normalizedEmail);
 
-    if (!record) {
-      res.status(400).json({ success: false, error: 'No active verification code found. Please request a new one.' });
-      return;
-    }
+    let verifiedName: string | undefined = undefined;
 
-    if (Date.now() > record.expiresAt) {
+    // 1. Check Redis first (cross-worker Passenger safe & survives server restarts)
+    const redisResult = await verifyRedisOtp(normalizedEmail, otp);
+    if (redisResult) {
+      if (!redisResult.success) {
+        res.status(400).json({ success: false, error: redisResult.error || 'Incorrect verification code.' });
+        return;
+      }
+      verifiedName = redisResult.name;
       otpMap.delete(normalizedEmail);
-      res.status(400).json({ success: false, error: 'Verification code has expired. Please request a new one.' });
-      return;
-    }
+    } else {
+      // 2. Fallback to in-memory otpMap
+      const record = otpMap.get(normalizedEmail);
 
-    if (record.attempts >= MAX_ATTEMPTS) {
+      if (!record) {
+        res.status(400).json({ success: false, error: 'No active verification code found. Please request a new one.' });
+        return;
+      }
+
+      if (Date.now() > record.expiresAt) {
+        otpMap.delete(normalizedEmail);
+        res.status(400).json({ success: false, error: 'Verification code has expired. Please request a new one.' });
+        return;
+      }
+
+      if (record.attempts >= MAX_ATTEMPTS) {
+        otpMap.delete(normalizedEmail);
+        res.status(429).json({ success: false, error: 'Too many incorrect attempts. Please request a new code.' });
+        return;
+      }
+
+      const providedHash = hashOtp(otp);
+      if (providedHash !== record.hashedCode) {
+        record.attempts += 1;
+        const remaining = MAX_ATTEMPTS - record.attempts;
+        res.status(400).json({
+          success: false,
+          error: `Incorrect verification code. ${remaining} attempt${remaining === 1 ? '' : 's'} remaining.`,
+        });
+        return;
+      }
+
+      // Code is valid! Delete record immediately (single-use)
+      verifiedName = record.name;
       otpMap.delete(normalizedEmail);
-      res.status(429).json({ success: false, error: 'Too many incorrect attempts. Please request a new code.' });
-      return;
     }
-
-    const providedHash = hashOtp(otp);
-    if (providedHash !== record.hashedCode) {
-      record.attempts += 1;
-      const remaining = MAX_ATTEMPTS - record.attempts;
-      res.status(400).json({
-        success: false,
-        error: `Incorrect verification code. ${remaining} attempt${remaining === 1 ? '' : 's'} remaining.`,
-      });
-      return;
-    }
-
-    // Code is valid! Delete record immediately (single-use)
-    otpMap.delete(normalizedEmail);
 
     // Upsert customer user
     const existing = await pool.query('SELECT * FROM users WHERE email = $1', [normalizedEmail]);
     let user = existing.rows[0];
-    const displayName = name?.trim() || record.name || null;
+    const displayName = name?.trim() || verifiedName || null;
 
     if (!user) {
       const insertResult = await pool.query(

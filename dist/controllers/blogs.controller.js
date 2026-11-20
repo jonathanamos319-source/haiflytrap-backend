@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteBlog = exports.updateBlog = exports.createBlog = exports.getBlogById = exports.getBlogs = void 0;
 const db_1 = require("../config/db");
+const redis_1 = require("../config/redis");
 const ALLOWED_BLOG_COLUMNS = ['title', 'slug', 'content', 'excerpt', 'image_url', 'category', 'tags'];
 function slugify(text) {
     return text
@@ -12,7 +13,16 @@ function slugify(text) {
 }
 const getBlogs = async (req, res, next) => {
     try {
+        const cacheKey = 'cache:blogs:all';
+        const cached = await (0, redis_1.getJsonCache)(cacheKey);
+        if (cached) {
+            res.setHeader('X-Cache', 'HIT');
+            res.status(200).json({ success: true, data: cached });
+            return;
+        }
         const result = await db_1.pool.query('SELECT * FROM blogs ORDER BY created_at DESC');
+        (0, redis_1.setJsonCache)(cacheKey, result.rows, 3600).catch(() => { });
+        res.setHeader('X-Cache', 'MISS');
         res.status(200).json({ success: true, data: result.rows });
     }
     catch (err) {
@@ -48,6 +58,7 @@ const createBlog = async (req, res, next) => {
         const result = await db_1.pool.query(`INSERT INTO blogs (title, slug, content, excerpt, image_url, category, tags)
        VALUES ($1, $2, $3, $4, $5, $6, $7)
        RETURNING *`, [title, slug, content ?? null, excerpt ?? null, image_url ?? null, category ?? null, tags ? JSON.stringify(tags) : null]);
+        await (0, redis_1.invalidateBlogCache)();
         res.status(201).json({ success: true, data: result.rows[0] });
     }
     catch (err) {
@@ -79,6 +90,7 @@ const updateBlog = async (req, res, next) => {
             res.status(404).json({ success: false, error: 'Blog post not found' });
             return;
         }
+        await (0, redis_1.invalidateBlogCache)();
         res.status(200).json({ success: true, data: result.rows[0] });
     }
     catch (err) {
@@ -90,6 +102,7 @@ const deleteBlog = async (req, res, next) => {
     try {
         const { id } = req.params;
         await db_1.pool.query('DELETE FROM blogs WHERE id = $1', [id]);
+        await (0, redis_1.invalidateBlogCache)();
         res.status(200).json({ success: true, message: 'Blog post deleted successfully' });
     }
     catch (err) {

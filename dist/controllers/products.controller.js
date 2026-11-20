@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteProduct = exports.updateProduct = exports.createProduct = exports.getProductById = exports.getProducts = void 0;
 const db_1 = require("../config/db");
 const uploadImage_1 = require("../middleware/uploadImage");
+const redis_1 = require("../config/redis");
 const COLUMN_MAP = {
     name: 'name',
     description: 'description',
@@ -95,6 +96,15 @@ function formatProduct(row) {
 const getProducts = async (req, res, next) => {
     try {
         const { category } = req.query;
+        const catKey = typeof category === 'string' && category.trim() ? category.trim() : 'all';
+        const cacheKey = `cache:products:${catKey}`;
+        // Try Redis cache first (sub-5ms response)
+        const cached = await (0, redis_1.getJsonCache)(cacheKey);
+        if (cached) {
+            res.setHeader('X-Cache', 'HIT');
+            res.status(200).json({ success: true, data: cached });
+            return;
+        }
         let sql = 'SELECT * FROM products ORDER BY created_at DESC';
         const params = [];
         if (category && category !== 'all' && category !== 'All') {
@@ -102,7 +112,11 @@ const getProducts = async (req, res, next) => {
             params.push(category);
         }
         const result = await db_1.pool.query(sql, params);
-        res.status(200).json({ success: true, data: result.rows.map(formatProduct) });
+        const data = result.rows.map(formatProduct);
+        // Save in Redis cache for subsequent visitors (1 hour TTL)
+        (0, redis_1.setJsonCache)(cacheKey, data, 3600).catch(() => { });
+        res.setHeader('X-Cache', 'MISS');
+        res.status(200).json({ success: true, data });
     }
     catch (err) {
         console.error('Internal Error (getProducts):', err);
@@ -148,6 +162,7 @@ const createProduct = async (req, res, next) => {
         const cols = keys.join(', ');
         const placeholders = keys.map((_, i) => `$${i + 1}`).join(', ');
         const result = await db_1.pool.query(`INSERT INTO products (${cols}) VALUES (${placeholders}) RETURNING *`, values);
+        await (0, redis_1.invalidateProductCache)();
         res.status(201).json({ success: true, data: formatProduct(result.rows[0]) });
     }
     catch (err) {
@@ -198,6 +213,7 @@ const updateProduct = async (req, res, next) => {
             res.status(404).json({ success: false, error: 'Product not found' });
             return;
         }
+        await (0, redis_1.invalidateProductCache)();
         res.status(200).json({ success: true, data: formatProduct(row) });
     }
     catch (err) {
@@ -212,6 +228,7 @@ const deleteProduct = async (req, res, next) => {
         const fetchResult = await db_1.pool.query('SELECT * FROM products WHERE id = $1', [id]);
         const product = fetchResult.rows[0];
         if (!product) {
+            await (0, redis_1.invalidateProductCache)();
             res.status(200).json({ success: true, message: 'Product already deleted or not found' });
             return;
         }
@@ -219,6 +236,7 @@ const deleteProduct = async (req, res, next) => {
             await (0, uploadImage_1.deleteFromCloudinary)(product.cloudinary_public_id).catch(() => { });
         }
         await db_1.pool.query('DELETE FROM products WHERE id = $1', [id]);
+        await (0, redis_1.invalidateProductCache)();
         res.status(200).json({ success: true, message: 'Product deleted successfully' });
     }
     catch (err) {

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { pool } from '../config/db';
 import { ApiResponse } from '../types';
+import { getJsonCache, setJsonCache, invalidateBlogCache } from '../config/redis';
 
 const ALLOWED_BLOG_COLUMNS = ['title', 'slug', 'content', 'excerpt', 'image_url', 'category', 'tags'];
 
@@ -14,7 +15,18 @@ function slugify(text: string): string {
 
 export const getBlogs = async (req: Request, res: Response<ApiResponse>, next: NextFunction) => {
   try {
+    const cacheKey = 'cache:blogs:all';
+    const cached = await getJsonCache<any[]>(cacheKey);
+    if (cached) {
+      res.setHeader('X-Cache', 'HIT');
+      res.status(200).json({ success: true, data: cached });
+      return;
+    }
+
     const result = await pool.query('SELECT * FROM blogs ORDER BY created_at DESC');
+    setJsonCache(cacheKey, result.rows, 3600).catch(() => {});
+
+    res.setHeader('X-Cache', 'MISS');
     res.status(200).json({ success: true, data: result.rows });
   } catch (err) {
     console.error('Internal Error (getBlogs):', err);
@@ -57,6 +69,7 @@ export const createBlog = async (req: Request, res: Response<ApiResponse>, next:
       [title, slug, content ?? null, excerpt ?? null, image_url ?? null, category ?? null, tags ? JSON.stringify(tags) : null]
     );
 
+    await invalidateBlogCache();
     res.status(201).json({ success: true, data: result.rows[0] });
   } catch (err) {
     next(err);
@@ -96,6 +109,7 @@ export const updateBlog = async (req: Request, res: Response<ApiResponse>, next:
       return;
     }
 
+    await invalidateBlogCache();
     res.status(200).json({ success: true, data: result.rows[0] });
   } catch (err) {
     next(err);
@@ -106,6 +120,7 @@ export const deleteBlog = async (req: Request, res: Response<ApiResponse>, next:
   try {
     const { id } = req.params;
     await pool.query('DELETE FROM blogs WHERE id = $1', [id]);
+    await invalidateBlogCache();
     res.status(200).json({ success: true, message: 'Blog post deleted successfully' });
   } catch (err) {
     next(err);
