@@ -42,5 +42,13 @@ export declare function verifyRedisOtp(email: string, candidateOtp: string): Pro
     name?: string;
     error?: string;
 } | null>;
+/**
+ * Record a visitor ping in a Redis Sorted Set with 3-minute sliding window
+ */
+export declare function recordVisitorPing(visitorId: string): Promise<void>;
+/**
+ * Get count of active visitors in the last 3 minutes
+ */
+export declare function getActiveVisitorsCount(): Promise<number>;
 export default redisClient;
 //# sourceMappingURL=redis.d.ts.map

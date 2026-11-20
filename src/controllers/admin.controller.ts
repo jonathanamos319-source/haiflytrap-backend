@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { pool } from '../config/db';
 import { uploadToCloudinary, deleteFromCloudinary } from '../middleware/uploadImage';
+import { getActiveVisitorsCount } from '../config/redis';
 import { ApiResponse } from '../types';
 
 export const uploadImage = async (req: Request, res: Response<ApiResponse>, next: NextFunction) => {
@@ -44,10 +45,11 @@ export const deleteImage = async (req: Request, res: Response<ApiResponse>, next
 
 export const getDashboardStats = async (req: Request, res: Response<ApiResponse>, next: NextFunction) => {
   try {
-    const [ordersRes, productsRes, marketersRes] = await Promise.all([
+    const [ordersRes, productsRes, marketersRes, activeVisitors] = await Promise.all([
       pool.query('SELECT COUNT(*) AS count FROM orders'),
       pool.query('SELECT COUNT(*) AS count FROM products'),
       pool.query('SELECT COUNT(*) AS count FROM marketers'),
+      getActiveVisitorsCount(),
     ]);
 
     res.status(200).json({
@@ -56,6 +58,7 @@ export const getDashboardStats = async (req: Request, res: Response<ApiResponse>
         totalOrders: parseInt(ordersRes.rows[0]?.count || '0', 10),
         totalProducts: parseInt(productsRes.rows[0]?.count || '0', 10),
         totalMarketers: parseInt(marketersRes.rows[0]?.count || '0', 10),
+        activeVisitors,
       },
     });
   } catch (err) {

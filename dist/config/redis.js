@@ -11,6 +11,8 @@ exports.invalidateProductCache = invalidateProductCache;
 exports.invalidateBlogCache = invalidateBlogCache;
 exports.storeRedisOtp = storeRedisOtp;
 exports.verifyRedisOtp = verifyRedisOtp;
+exports.recordVisitorPing = recordVisitorPing;
+exports.getActiveVisitorsCount = getActiveVisitorsCount;
 const ioredis_1 = __importDefault(require("ioredis"));
 const path_1 = __importDefault(require("path"));
 const dotenv_1 = __importDefault(require("dotenv"));
@@ -198,6 +200,45 @@ async function verifyRedisOtp(email, candidateOtp) {
     catch (err) {
         console.warn(`[Redis] Error verifying OTP for ${email}:`, err);
         return null;
+    }
+}
+// ─── Real-Time Visitor Metrics ────────────────────────────────────────────────
+/**
+ * Record a visitor ping in a Redis Sorted Set with 3-minute sliding window
+ */
+async function recordVisitorPing(visitorId) {
+    if (!isRedisAvailable() || !redisClient)
+        return;
+    try {
+        const key = 'metrics:active_visitors';
+        const now = Date.now();
+        await redisClient.zadd(key, now, visitorId);
+        // Expire entries older than 3 minutes (180,000 ms)
+        const threeMinutesAgo = now - 3 * 60 * 1000;
+        await redisClient.zremrangebyscore(key, 0, threeMinutesAgo);
+        await redisClient.expire(key, 300);
+    }
+    catch (err) {
+        console.warn('[Redis] Error recording visitor ping:', err);
+    }
+}
+/**
+ * Get count of active visitors in the last 3 minutes
+ */
+async function getActiveVisitorsCount() {
+    if (!isRedisAvailable() || !redisClient)
+        return 1;
+    try {
+        const key = 'metrics:active_visitors';
+        const now = Date.now();
+        const threeMinutesAgo = now - 3 * 60 * 1000;
+        await redisClient.zremrangebyscore(key, 0, threeMinutesAgo);
+        const count = await redisClient.zcard(key);
+        return Math.max(count, 1);
+    }
+    catch (err) {
+        console.warn('[Redis] Error getting active visitors:', err);
+        return 1;
     }
 }
 exports.default = redisClient;

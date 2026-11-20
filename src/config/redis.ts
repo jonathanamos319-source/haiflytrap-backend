@@ -207,4 +207,42 @@ export async function verifyRedisOtp(
   }
 }
 
+// ─── Real-Time Visitor Metrics ────────────────────────────────────────────────
+
+/**
+ * Record a visitor ping in a Redis Sorted Set with 3-minute sliding window
+ */
+export async function recordVisitorPing(visitorId: string): Promise<void> {
+  if (!isRedisAvailable() || !redisClient) return;
+  try {
+    const key = 'metrics:active_visitors';
+    const now = Date.now();
+    await redisClient.zadd(key, now, visitorId);
+    // Expire entries older than 3 minutes (180,000 ms)
+    const threeMinutesAgo = now - 3 * 60 * 1000;
+    await redisClient.zremrangebyscore(key, 0, threeMinutesAgo);
+    await redisClient.expire(key, 300);
+  } catch (err) {
+    console.warn('[Redis] Error recording visitor ping:', err);
+  }
+}
+
+/**
+ * Get count of active visitors in the last 3 minutes
+ */
+export async function getActiveVisitorsCount(): Promise<number> {
+  if (!isRedisAvailable() || !redisClient) return 1;
+  try {
+    const key = 'metrics:active_visitors';
+    const now = Date.now();
+    const threeMinutesAgo = now - 3 * 60 * 1000;
+    await redisClient.zremrangebyscore(key, 0, threeMinutesAgo);
+    const count = await redisClient.zcard(key);
+    return Math.max(count, 1);
+  } catch (err) {
+    console.warn('[Redis] Error getting active visitors:', err);
+    return 1;
+  }
+}
+
 export default redisClient;

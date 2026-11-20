@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getDashboardStats = exports.deleteImage = exports.uploadImage = void 0;
 const db_1 = require("../config/db");
 const uploadImage_1 = require("../middleware/uploadImage");
+const redis_1 = require("../config/redis");
 const uploadImage = async (req, res, next) => {
     try {
         if (!req.file) {
@@ -41,10 +42,11 @@ const deleteImage = async (req, res, next) => {
 exports.deleteImage = deleteImage;
 const getDashboardStats = async (req, res, next) => {
     try {
-        const [ordersRes, productsRes, marketersRes] = await Promise.all([
+        const [ordersRes, productsRes, marketersRes, activeVisitors] = await Promise.all([
             db_1.pool.query('SELECT COUNT(*) AS count FROM orders'),
             db_1.pool.query('SELECT COUNT(*) AS count FROM products'),
             db_1.pool.query('SELECT COUNT(*) AS count FROM marketers'),
+            (0, redis_1.getActiveVisitorsCount)(),
         ]);
         res.status(200).json({
             success: true,
@@ -52,6 +54,7 @@ const getDashboardStats = async (req, res, next) => {
                 totalOrders: parseInt(ordersRes.rows[0]?.count || '0', 10),
                 totalProducts: parseInt(productsRes.rows[0]?.count || '0', 10),
                 totalMarketers: parseInt(marketersRes.rows[0]?.count || '0', 10),
+                activeVisitors,
             },
         });
     }
