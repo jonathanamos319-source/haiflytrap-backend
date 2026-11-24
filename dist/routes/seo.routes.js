@@ -3,11 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const db_1 = require("../config/db");
 const router = (0, express_1.Router)();
-router.get('/sitemap.xml', async (req, res) => {
+router.get('/sitemap.xml', async (_req, res) => {
     try {
-        const host = (req.headers['x-forwarded-host'] || req.headers.host || '');
-        const isOriginalNg = host.includes('haiflytrapng.com');
-        const baseUrl = isOriginalNg ? 'https://haiflytrapng.com' : 'https://haiflytrap.com';
+        const baseUrl = 'https://haiflytrap.com';
         // Fetch blogs and products
         const [blogsRes, productsRes] = await Promise.all([
             db_1.pool.query('SELECT slug, updated_at FROM blogs'),

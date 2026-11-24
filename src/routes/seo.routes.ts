@@ -3,11 +3,9 @@ import { pool } from '../config/db';
 
 const router = Router();
 
-router.get('/sitemap.xml', async (req, res) => {
+router.get('/sitemap.xml', async (_req, res) => {
   try {
-    const host = (req.headers['x-forwarded-host'] || req.headers.host || '') as string;
-    const isOriginalNg = host.includes('haiflytrapng.com');
-    const baseUrl = isOriginalNg ? 'https://haiflytrapng.com' : 'https://haiflytrap.com';
+    const baseUrl = 'https://haiflytrap.com';
 
     // Fetch blogs and products
     const [blogsRes, productsRes] = await Promise.all([
