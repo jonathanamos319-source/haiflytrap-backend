@@ -8,6 +8,8 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const allowedOrigins = [
     process.env.FRONTEND_URL,
+    'https://haiflytrap.com',
+    'https://www.haiflytrap.com',
     'https://haiflytrapng.com',
     'https://www.haiflytrapng.com',
     'https://haiflytrap-frontend.vercel.app',
@@ -21,7 +23,9 @@ exports.corsOptions = {
         if (!origin)
             return callback(null, true);
         if (allowedOrigins.some((allowed) => origin.startsWith(allowed)) ||
-            origin.endsWith('.vercel.app')) {
+            origin.endsWith('.vercel.app') ||
+            origin.includes('haiflytrap.com') ||
+            origin.includes('haiflytrapng.com')) {
             callback(null, true);
         }
         else {

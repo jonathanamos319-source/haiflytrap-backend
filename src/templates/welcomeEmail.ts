@@ -15,15 +15,15 @@ export const getWelcomeEmailHtml = (data: WelcomeEmailData): string => {
   const firstName = fullName ? fullName.split(' ')[0] : '';
   const greetingHeadline = firstName ? `Hey ${firstName}! Welcome to the family.` : 'Hey! Welcome to the family.';
 
-  const shopUrl = 'https://www.haiflytrapng.com/shop';
+  const shopUrl = 'https://www.haiflytrap.com/shop';
   const whatsappUrl = 'https://wa.me/2348031301311';
-  const homeUrl = 'https://www.haiflytrapng.com/';
+  const homeUrl = 'https://www.haiflytrap.com/';
 
-  // Public asset paths on haiflytrapng.com (using .png for 100% email client compatibility)
-  const logoUrl = 'https://www.haiflytrapng.com/products/HAIFLYLOGO.png';
-  const websiteLogoUrl = 'https://www.haiflytrapng.com/products/HAIFLYLOGO.png';
-  const trapImgUrl = 'https://www.haiflytrapng.com/haifly/hai-fly-trap.png';
-  const broadkillerImgUrl = 'https://www.haiflytrapng.com/haifly/broadkiller.png';
+  // Public asset paths on haiflytrap.com (using .png for 100% email client compatibility)
+  const logoUrl = 'https://www.haiflytrap.com/products/HAIFLYLOGO.png';
+  const websiteLogoUrl = 'https://www.haiflytrap.com/products/HAIFLYLOGO.png';
+  const trapImgUrl = 'https://www.haiflytrap.com/haifly/hai-fly-trap.png';
+  const broadkillerImgUrl = 'https://www.haiflytrap.com/haifly/broadkiller.png';
 
   return `<!DOCTYPE html>
 <html lang="en">
