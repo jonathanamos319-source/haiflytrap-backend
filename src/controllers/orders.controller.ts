@@ -234,31 +234,84 @@ export const updateOrderStatus = async (req: Request, res: Response<ApiResponse>
       return;
     }
 
+    // Send Dispatch Notification Email if status is in-transit
+    if (status === 'in-transit' || status === 'in_transit') {
+      const trackingUrl = `https://www.haiflytrap.com/track-order?id=${encodeURIComponent(data.tracking_number)}`;
+      sendMail({
+        to: data.customer_email,
+        subject: `Your Haifly Trap Order has been Dispatched! 🚚 (${data.tracking_number})`,
+        html: `
+          <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1a2f23; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 24px; overflow: hidden; background: #ffffff;">
+            <div style="background: #0f5238; padding: 40px 24px; text-align: center;">
+              <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.5px;">Your Order is On Its Way! 🚚</h1>
+              <p style="color: #9fe0be; margin: 8px 0 0 0; font-size: 14px;">Tracking #: <strong>${data.tracking_number}</strong></p>
+            </div>
+            <div style="padding: 32px 24px;">
+              <p style="font-size: 16px; line-height: 1.6; margin: 0 0 16px 0;">Hi <strong>${data.customer_name}</strong>,</p>
+              <p style="font-size: 15px; line-height: 1.6; color: #475569; margin: 0 0 24px 0;">Great news! Your package has been handed over to our dispatch team and is heading towards your delivery address.</p>
+              
+              <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; margin: 24px 0;">
+                <p style="margin: 0 0 8px 0; font-size: 12px; font-weight: bold; text-transform: uppercase; color: #64748b; letter-spacing: 0.5px;">Delivery Details</p>
+                <p style="margin: 0 0 6px 0; font-size: 14px; color: #1e293b;"><strong>Destination:</strong> ${data.shipping_address || 'Provided delivery address'}</p>
+                <p style="margin: 0; font-size: 14px; color: #1e293b;"><strong>Contact Phone:</strong> ${data.customer_phone}</p>
+              </div>
+
+              <div style="text-align: center; margin: 32px 0;">
+                <a href="${trackingUrl}" style="background: #0f5238; color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 9999px; font-weight: bold; font-size: 15px; display: inline-block; box-shadow: 0 4px 12px rgba(15, 82, 56, 0.25);">
+                  Track Delivery Live
+                </a>
+              </div>
+
+              <p style="font-size: 13px; color: #64748b; text-align: center; margin: 24px 0 0 0;">
+                Please ensure someone is available at the delivery location or reachable via your contact phone.
+              </p>
+              
+              <hr style="border: 0; border-top: 1px solid #f1f5f9; margin: 32px 0;" />
+              
+              <p style="font-size: 13px; line-height: 1.6; color: #64748b; margin: 0;">
+                Warm regards,<br />
+                <strong>The Haifly Trap Logistics Team</strong><br />
+                <a href="https://www.haiflytrap.com" style="color: #0f5238; text-decoration: none;">haiflytrap.com</a>
+              </p>
+            </div>
+          </div>
+        `
+      }).catch(console.error);
+    }
+
     // Send Delivery Email if status is delivered
     if (status === 'delivered') {
       sendMail({
         to: data.customer_email,
-        subject: `Your Order has been Delivered! - ${data.tracking_number}`,
+        subject: `Your Order has been Delivered! 🎉 - ${data.tracking_number}`,
         html: `
-          <div style="font-family: sans-serif; color: #1a2f23; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 24px; overflow: hidden;">
-            <div style="background: #0d9488; padding: 40px 20px; text-align: center;">
-              <h1 style="color: #ffffff; margin: 0; font-size: 24px;">Order Delivered!</h1>
+          <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1a2f23; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 24px; overflow: hidden; background: #ffffff;">
+            <div style="background: #0f5238; padding: 40px 24px; text-align: center;">
+              <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 800;">Order Delivered Successfully! 🎉</h1>
+              <p style="color: #9fe0be; margin: 8px 0 0 0; font-size: 14px;">Tracking #: <strong>${data.tracking_number}</strong></p>
             </div>
-            <div style="padding: 40px 20px;">
-              <p style="font-size: 16px; line-height: 1.5;">Hi ${data.customer_name},</p>
-              <p style="font-size: 16px; line-height: 1.5;">Great news! Your order <strong>${data.tracking_number}</strong> has been successfully delivered.</p>
+            <div style="padding: 32px 24px;">
+              <p style="font-size: 16px; line-height: 1.6; margin: 0 0 16px 0;">Hi <strong>${data.customer_name}</strong>,</p>
+              <p style="font-size: 15px; line-height: 1.6; color: #475569; margin: 0 0 24px 0;">Your package <strong>${data.tracking_number}</strong> has been marked as delivered.</p>
               
-              <div style="background: #f0fdfa; border: 1px solid #ccfbf1; padding: 24px; border-radius: 16px; margin: 32px 0; text-align: center;">
-                <p style="margin: 0; color: #0d9488; font-size: 16px; font-weight: bold;">Enjoy your purchase!</p>
+              <div style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 20px; border-radius: 16px; margin: 24px 0; text-align: center;">
+                <p style="margin: 0; color: #166534; font-size: 15px; font-weight: bold;">We hope you enjoy your pest-free environment!</p>
               </div>
 
-              <p style="font-size: 14px; color: #64748b;">If you have any questions about your order or need assistance, please don't hesitate to contact our support team.</p>
+              <div style="text-align: center; margin: 28px 0;">
+                <a href="https://www.haiflytrap.com/reviews" style="background: #0f5238; color: #ffffff; text-decoration: none; padding: 12px 28px; border-radius: 9999px; font-weight: bold; font-size: 14px; display: inline-block;">
+                  Share Your Experience / Review
+                </a>
+              </div>
+
+              <p style="font-size: 13px; color: #64748b; line-height: 1.5;">If you have any questions or need usage tips, our customer care team is always here for you.</p>
               
-              <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 32px 0;" />
+              <hr style="border: 0; border-top: 1px solid #f1f5f9; margin: 32px 0;" />
               
-              <p style="font-size: 14px; line-height: 1.5; color: #1a2f23;">
+              <p style="font-size: 13px; line-height: 1.6; color: #64748b; margin: 0;">
                 Thank you for choosing Haifly Trap,<br />
-                <strong>The Haifly Trap Team</strong>
+                <strong>The Haifly Trap Team</strong><br />
+                <a href="https://www.haiflytrap.com" style="color: #0f5238; text-decoration: none;">haiflytrap.com</a>
               </p>
             </div>
           </div>
