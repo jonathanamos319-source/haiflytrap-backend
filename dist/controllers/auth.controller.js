@@ -27,6 +27,17 @@ function hashOtp(code) {
 function generate6DigitCode() {
     return crypto_1.default.randomInt(100000, 1000000).toString();
 }
+function issueSessionToken(res, user, roleOverride) {
+    const role = roleOverride || user.role;
+    const token = (0, jwt_1.signToken)({
+        sub: user.id,
+        email: user.email,
+        role,
+        name: user.name,
+    });
+    (0, jwt_1.setAuthCookie)(res, role, token);
+    return token;
+}
 function checkIpRateLimit(ip) {
     const now = Date.now();
     const timestamps = (ipRateLimit.get(ip) || []).filter(t => now - t < IP_WINDOW_MS);
@@ -61,14 +72,8 @@ const register = async (req, res, next) => {
         const user = result.rows[0];
         // Fire welcome email asynchronously
         (0, sendWelcomeEmails_1.sendWelcomeEmailToUser)(user).catch(err => console.error('[Auth] Failed to trigger immediate welcome email:', err));
-        const token = (0, jwt_1.signToken)({
-            sub: user.id,
-            email: user.email,
-            role: 'customer',
-            name: user.name,
-        });
-        (0, jwt_1.setAuthCookie)(res, 'customer', token);
-        res.status(201).json({ success: true, data: user });
+        const token = issueSessionToken(res, user, 'customer');
+        res.status(201).json({ success: true, data: user, token });
     }
     catch (err) {
         next(err);
@@ -97,13 +102,7 @@ const login = async (req, res, next) => {
             res.status(401).json({ success: false, error: 'Invalid email or password' });
             return;
         }
-        const token = (0, jwt_1.signToken)({
-            sub: user.id,
-            email: user.email,
-            role: user.role,
-            name: user.name,
-        });
-        (0, jwt_1.setAuthCookie)(res, user.role, token);
+        const token = issueSessionToken(res, user);
         res.status(200).json({
             success: true,
             data: {
@@ -112,6 +111,7 @@ const login = async (req, res, next) => {
                 name: user.name,
                 role: user.role,
             },
+            token,
         });
     }
     catch (err) {
@@ -145,13 +145,7 @@ const adminLogin = async (req, res, next) => {
             res.status(403).json({ success: false, error: 'Access denied. Admin privileges required.' });
             return;
         }
-        const token = (0, jwt_1.signToken)({
-            sub: user.id,
-            email: user.email,
-            role: 'admin',
-            name: user.name,
-        });
-        (0, jwt_1.setAuthCookie)(res, 'admin', token);
+        const token = issueSessionToken(res, user, 'admin');
         res.status(200).json({
             success: true,
             data: {
@@ -160,6 +154,7 @@ const adminLogin = async (req, res, next) => {
                 name: user.name,
                 role: user.role,
             },
+            token,
         });
     }
     catch (err) {
@@ -194,13 +189,7 @@ const handlerLogin = async (req, res, next) => {
             res.status(403).json({ success: false, error: 'Access denied. Handler privileges required.' });
             return;
         }
-        const token = (0, jwt_1.signToken)({
-            sub: user.id,
-            email: user.email,
-            role: 'handler',
-            name: user.name,
-        });
-        (0, jwt_1.setAuthCookie)(res, 'handler', token);
+        const token = issueSessionToken(res, user, 'handler');
         res.status(200).json({
             success: true,
             data: {
@@ -209,6 +198,7 @@ const handlerLogin = async (req, res, next) => {
                 name: user.name,
                 role: user.role,
             },
+            token,
         });
     }
     catch (err) {
@@ -277,13 +267,7 @@ const googleAuth = async (req, res, next) => {
             });
             return;
         }
-        const token = (0, jwt_1.signToken)({
-            sub: user.id,
-            email: user.email,
-            role: user.role,
-            name: user.name,
-        });
-        (0, jwt_1.setAuthCookie)(res, user.role, token);
+        const token = issueSessionToken(res, user);
         res.status(200).json({
             success: true,
             data: {
@@ -293,6 +277,7 @@ const googleAuth = async (req, res, next) => {
                 role: user.role,
                 avatar_url: user.avatar_url,
             },
+            token,
         });
     }
     catch (err) {
@@ -464,13 +449,7 @@ const verifyOtp = async (req, res, next) => {
             res.status(403).json({ success: false, error: 'Admin users must use the secure admin portal.' });
             return;
         }
-        const token = (0, jwt_1.signToken)({
-            sub: user.id,
-            email: user.email,
-            role: user.role,
-            name: user.name,
-        });
-        (0, jwt_1.setAuthCookie)(res, user.role, token);
+        const token = issueSessionToken(res, user);
         res.status(200).json({
             success: true,
             data: {
@@ -479,6 +458,7 @@ const verifyOtp = async (req, res, next) => {
                 name: user.name,
                 role: user.role,
             },
+            token,
         });
     }
     catch (err) {
@@ -600,14 +580,8 @@ const adminRegister = async (req, res, next) => {
        VALUES ($1, $2, $3, 'admin')
        RETURNING id, email, name, role, created_at`, [normalizedEmail, passwordHash, displayName]);
         const user = result.rows[0];
-        const token = (0, jwt_1.signToken)({
-            sub: user.id,
-            email: user.email,
-            role: 'admin',
-            name: user.name,
-        });
-        (0, jwt_1.setAuthCookie)(res, 'admin', token);
-        res.status(201).json({ success: true, data: user });
+        const token = issueSessionToken(res, user, 'admin');
+        res.status(201).json({ success: true, data: user, token });
     }
     catch (err) {
         next(err);

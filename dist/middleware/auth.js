@@ -9,37 +9,36 @@ const jwt_1 = require("../config/jwt");
 async function authMiddleware(req, res, next) {
     try {
         const cookies = req.cookies || {};
-        let token;
-        // Strict Role Context: check if client explicitly requested a role context
-        const requestedRole = req.headers['x-auth-role']?.toLowerCase() ||
-            req.query.role?.toLowerCase();
+        // Strict Role Context: prioritize explicit query param, then client header hint
+        const requestedRole = req.query.role?.toLowerCase() ||
+            req.headers['x-auth-role']?.toLowerCase();
+        let cookieToken;
         if (requestedRole === 'admin') {
-            token = cookies[jwt_1.COOKIE_NAMES.admin];
+            cookieToken = cookies[jwt_1.COOKIE_NAMES.admin];
         }
         else if (requestedRole === 'handler') {
-            token = cookies[jwt_1.COOKIE_NAMES.handler];
+            cookieToken = cookies[jwt_1.COOKIE_NAMES.handler];
         }
         else if (requestedRole === 'customer') {
-            token = cookies[jwt_1.COOKIE_NAMES.customer];
+            cookieToken = cookies[jwt_1.COOKIE_NAMES.customer];
         }
         else {
             // Path-based strict matching (NO cross-role fallback leakage)
             const path = req.originalUrl || req.path;
             if (path.includes('/admin')) {
-                token = cookies[jwt_1.COOKIE_NAMES.admin];
+                cookieToken = cookies[jwt_1.COOKIE_NAMES.admin];
             }
             else if (path.includes('/handler')) {
-                token = cookies[jwt_1.COOKIE_NAMES.handler];
+                cookieToken = cookies[jwt_1.COOKIE_NAMES.handler];
             }
             else {
-                token = cookies[jwt_1.COOKIE_NAMES.customer];
+                cookieToken = cookies[jwt_1.COOKIE_NAMES.customer];
             }
         }
-        // Fallback: check Authorization Bearer header
-        if (!token && req.headers.authorization?.startsWith('Bearer ')) {
-            token = req.headers.authorization.split(' ')[1];
-        }
-        if (!token) {
+        const bearerToken = req.headers.authorization?.startsWith('Bearer ')
+            ? req.headers.authorization.split(' ')[1]
+            : undefined;
+        if (!cookieToken && !bearerToken) {
             res.status(401).json({
                 success: false,
                 error: 'Authentication required. Please log in.',
@@ -47,13 +46,23 @@ async function authMiddleware(req, res, next) {
             return;
         }
         let payload;
-        try {
-            payload = (0, jwt_1.verifyToken)(token);
+        let lastError;
+        // Verify role cookie first; if missing or stale/expired, fall back to Authorization Bearer header
+        for (const candidate of [cookieToken, bearerToken]) {
+            if (!candidate)
+                continue;
+            try {
+                payload = (0, jwt_1.verifyToken)(candidate);
+                break;
+            }
+            catch (err) {
+                lastError = err;
+            }
         }
-        catch (err) {
+        if (!payload) {
             res.status(401).json({
                 success: false,
-                error: `Invalid or expired session: ${err?.message || 'Token verification failed'}`,
+                error: `Invalid or expired session: ${lastError?.message || 'Token verification failed'}`,
             });
             return;
         }

@@ -25,7 +25,10 @@ const notifications_routes_1 = __importDefault(require("./routes/notifications.r
 const app = (0, express_1.default)();
 exports.app = app;
 // Security Middleware
-app.use((0, helmet_1.default)());
+app.use((0, helmet_1.default)({
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+    crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' },
+}));
 app.use(helmet_1.default.hsts({ maxAge: 31536000, includeSubDomains: true }));
 // Parsing & Cookie Middleware
 app.use(express_1.default.json());

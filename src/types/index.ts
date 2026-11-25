@@ -127,6 +127,7 @@ export interface HandlerOrder {
 export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
+  token?: string;
   error?: string;
   message?: string;
 }

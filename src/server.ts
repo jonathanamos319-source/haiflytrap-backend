@@ -21,7 +21,12 @@ import notificationsRoutes from './routes/notifications.routes';
 const app = express();
 
 // Security Middleware
-app.use(helmet());
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+    crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' },
+  })
+);
 app.use(helmet.hsts({ maxAge: 31536000, includeSubDomains: true }));
 
 // Parsing & Cookie Middleware

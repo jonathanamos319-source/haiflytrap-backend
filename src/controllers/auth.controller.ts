@@ -38,6 +38,22 @@ function generate6DigitCode(): string {
   return crypto.randomInt(100000, 1000000).toString();
 }
 
+function issueSessionToken(
+  res: Response,
+  user: { id: string; email: string; role: 'customer' | 'admin' | 'handler'; name?: string | null },
+  roleOverride?: 'customer' | 'admin' | 'handler'
+): string {
+  const role = roleOverride || user.role;
+  const token = signToken({
+    sub: user.id,
+    email: user.email,
+    role,
+    name: user.name,
+  });
+  setAuthCookie(res, role, token);
+  return token;
+}
+
 function checkIpRateLimit(ip: string): boolean {
   const now = Date.now();
   const timestamps = (ipRateLimit.get(ip) || []).filter(t => now - t < IP_WINDOW_MS);
@@ -84,15 +100,8 @@ export const register = async (req: Request, res: Response<ApiResponse>, next: N
       console.error('[Auth] Failed to trigger immediate welcome email:', err)
     );
 
-    const token = signToken({
-      sub: user.id,
-      email: user.email,
-      role: 'customer',
-      name: user.name,
-    });
-
-    setAuthCookie(res, 'customer', token);
-    res.status(201).json({ success: true, data: user });
+    const token = issueSessionToken(res, user, 'customer');
+    res.status(201).json({ success: true, data: user, token });
   } catch (err) {
     next(err);
   }
@@ -125,14 +134,7 @@ export const login = async (req: Request, res: Response<ApiResponse>, next: Next
       return;
     }
 
-    const token = signToken({
-      sub: user.id,
-      email: user.email,
-      role: user.role,
-      name: user.name,
-    });
-
-    setAuthCookie(res, user.role, token);
+    const token = issueSessionToken(res, user);
     res.status(200).json({
       success: true,
       data: {
@@ -141,6 +143,7 @@ export const login = async (req: Request, res: Response<ApiResponse>, next: Next
         name: user.name,
         role: user.role,
       },
+      token,
     });
   } catch (err) {
     next(err);
@@ -179,14 +182,7 @@ export const adminLogin = async (req: Request, res: Response<ApiResponse>, next:
       return;
     }
 
-    const token = signToken({
-      sub: user.id,
-      email: user.email,
-      role: 'admin',
-      name: user.name,
-    });
-
-    setAuthCookie(res, 'admin', token);
+    const token = issueSessionToken(res, user, 'admin');
     res.status(200).json({
       success: true,
       data: {
@@ -195,6 +191,7 @@ export const adminLogin = async (req: Request, res: Response<ApiResponse>, next:
         name: user.name,
         role: user.role,
       },
+      token,
     });
   } catch (err) {
     next(err);
@@ -234,14 +231,7 @@ export const handlerLogin = async (req: Request, res: Response<ApiResponse>, nex
       return;
     }
 
-    const token = signToken({
-      sub: user.id,
-      email: user.email,
-      role: 'handler',
-      name: user.name,
-    });
-
-    setAuthCookie(res, 'handler', token);
+    const token = issueSessionToken(res, user, 'handler');
     res.status(200).json({
       success: true,
       data: {
@@ -250,6 +240,7 @@ export const handlerLogin = async (req: Request, res: Response<ApiResponse>, nex
         name: user.name,
         role: user.role,
       },
+      token,
     });
   } catch (err) {
     next(err);
@@ -339,14 +330,7 @@ export const googleAuth = async (req: Request, res: Response<ApiResponse>, next:
       return;
     }
 
-    const token = signToken({
-      sub: user.id,
-      email: user.email,
-      role: user.role,
-      name: user.name,
-    });
-
-    setAuthCookie(res, user.role, token);
+    const token = issueSessionToken(res, user);
     res.status(200).json({
       success: true,
       data: {
@@ -356,6 +340,7 @@ export const googleAuth = async (req: Request, res: Response<ApiResponse>, next:
         role: user.role,
         avatar_url: user.avatar_url,
       },
+      token,
     });
   } catch (err) {
     console.error('Google auth error:', err);
@@ -556,14 +541,7 @@ export const verifyOtp = async (req: Request, res: Response<ApiResponse>, next: 
       return;
     }
 
-    const token = signToken({
-      sub: user.id,
-      email: user.email,
-      role: user.role,
-      name: user.name,
-    });
-
-    setAuthCookie(res, user.role, token);
+    const token = issueSessionToken(res, user);
     res.status(200).json({
       success: true,
       data: {
@@ -572,6 +550,7 @@ export const verifyOtp = async (req: Request, res: Response<ApiResponse>, next: 
         name: user.name,
         role: user.role,
       },
+      token,
     });
   } catch (err) {
     next(err);
@@ -711,15 +690,8 @@ export const adminRegister = async (req: Request, res: Response<ApiResponse>, ne
     );
 
     const user = result.rows[0];
-    const token = signToken({
-      sub: user.id,
-      email: user.email,
-      role: 'admin',
-      name: user.name,
-    });
-
-    setAuthCookie(res, 'admin', token);
-    res.status(201).json({ success: true, data: user });
+    const token = issueSessionToken(res, user, 'admin');
+    res.status(201).json({ success: true, data: user, token });
   } catch (err) {
     next(err);
   }
