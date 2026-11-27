@@ -5,7 +5,7 @@ const db_1 = require("../config/db");
 const router = (0, express_1.Router)();
 router.get('/sitemap.xml', async (_req, res) => {
     try {
-        const baseUrl = 'https://haiflytrap.com';
+        const baseUrl = 'https://www.haiflytrap.com';
         // Fetch blogs and products
         const [blogsRes, productsRes] = await Promise.all([
             db_1.pool.query('SELECT slug, updated_at FROM blogs'),

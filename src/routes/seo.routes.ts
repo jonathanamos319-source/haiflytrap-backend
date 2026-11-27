@@ -5,7 +5,7 @@ const router = Router();
 
 router.get('/sitemap.xml', async (_req, res) => {
   try {
-    const baseUrl = 'https://haiflytrap.com';
+    const baseUrl = 'https://www.haiflytrap.com';
 
     // Fetch blogs and products
     const [blogsRes, productsRes] = await Promise.all([
